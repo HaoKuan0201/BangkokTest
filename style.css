@@ -435,6 +435,36 @@ body[data-theme="dark"] .event-notes {
     margin: 0;
 }
 
+/* 展開/收起按鈕 */
+.toggle-notes-btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 5px 10px;
+    margin-top: 5px;
+    background: transparent;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    color: var(--primary-color);
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.toggle-notes-btn:hover {
+    background-color: #f0f0f0;
+}
+
+/* Dark Mode 調整按鈕 */
+body[data-theme="dark"] .toggle-notes-btn {
+    background: #333;
+    border-color: #444;
+    color: var(--text-main);
+}
+body[data-theme="dark"] .toggle-notes-btn:hover {
+    background: #444;
+}
+
 /* 樓層區塊 (<li>) 的樣式 */
 .floor-section {
     margin-bottom: 20px;
