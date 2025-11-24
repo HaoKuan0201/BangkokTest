@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>曼谷五日自由行</title>
+
+    <link rel="stylesheet" href="style.css">
+    </head>
+<body>
+
+    <header class="app-header">
+        <div class="header-top">
+            <div class="header-titles">
+                <h1>曼谷五日自由行</h1>
+                <p class="subtitle">11/27 (四) - 12/1 (一)</p>
+            </div>
+            
+            <div class="header-controls">
+
+                <button id="theme-toggle-btn" class="icon-btn theme-toggle-btn" title="切換深色/淺色主題">
+    <svg id="theme-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+    </svg>
+</button>
+                
+                <a href="https://www.google.com/maps/d/u/0/edit?mid=1pJlG73WanZkVkTSFvt3GLpMCDVU8heQ&ll=13.798196927110428%2C100.54907266665649&z=17" 
+                    target="_blank" 
+                    id="map-bookmark-btn" 
+                    class="icon-btn map-bookmark-btn" 
+                    title="查看行程地圖書籤">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6">
+                        <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/>
+                        <line x1="16" x2="16" y1="2" y2="22"/>
+                        <line x1="8" x2="8" y1="2" y2="18"/>
+                    </svg>
+                </a>
+                
+                <button id="copy-data-btn" class="icon-btn copy-btn" onclick="copyAppDataToClipboard()" title="複製所有數據">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6">
+                        <rect width="8" height="4" x="8" y="2" rx="1" ry="1"/>
+                        <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+                    </svg>
+                </button>
+                
+                <button id="edit-toggle-btn" class="icon-btn edit-toggle-btn" onclick="toggleEditMode()" title="切換編輯模式">
+                    <svg id="edit-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6">
+                        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <div id="toast-notification"></div>
+
+    <nav class="day-nav">
+        <div class="nav-container" id="nav-container">
+            </div>
+    </nav>
+
+    <main id="schedule-container" class="schedule-container">
+        </main>
+    
+    <div id="edit-modal" class="edit-modal">
+        <div class="modal-content">
+            <h3 id="modal-title">編輯行程</h3>
+            <form id="event-form">
+                <input type="hidden" id="event-day-index">
+                <input type="hidden" id="event-index">
+
+                <div class="form-group">
+                    <label for="event-time-input">時間 (格式: HH:MM 或 HH:MM-HH:MM)</label>
+                    <input type="text" id="event-time-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="event-location-input">地點/活動</label>
+                    <input type="text" id="event-location-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="event-map-url-input">地圖連結 (可選)</label>
+                    <input type="url" id="event-map-url-input">
+                </div>
+
+                <div class="form-group">
+                    <label for="event-note-url-input">備註連結 (可選，例如預訂網址)</label>
+                    <input type="url" id="event-note-url-input">
+                </div>
+
+                <div class="form-group">
+                    <label for="event-transport-input">交通方式 (例如: 步行, BTS, Bolt)</label>
+                    <input type="text" id="event-transport-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="event-estimated-cost-input">預估花費 (泰銖)</label>
+                    <input type="number" id="event-estimated-cost-input" value="0" min="0">
+                </div>
+                
+                <div class="form-group">
+                    <label for="event-notes-input">備註 (可選)</label>
+                    <textarea id="event-notes-input" rows="3"></textarea>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="cancel-btn" onclick="closeEditModal()">取消</button>
+                    <button type="submit" class="save-btn">儲存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // --- GitHub 設置 ---
+        // ⚠️ 警示：只有您自己使用這個工具時，才可將 PAT 寫在這裡
+        const GITHUB_PAT = 'TODO: [請替換為您的 Personal Access Token]';
+        const GITHUB_USER = 'TODO: [請替換為您的 GitHub 帳號]';
+        const REPO_NAME = 'TODO: [請替換為您的儲存庫名稱]';
+        const FILE_PATH = 'originalTripData.js'; // 檔案名稱
+        const BRANCH = 'main'; // 分支名稱 (可能是 main 或 master)
+
+        const RAW_FILE_URL = `https://raw.githubusercontent.com/${GITHUB_USER}/${REPO_NAME}/${BRANCH}/${FILE_PATH}`;
+        const API_CONTENTS_URL = `https://api.github.com/repos/${GITHUB_USER}/${REPO_NAME}/contents/${FILE_PATH}`;
+
+        // --- 全局變量和數據處理 ---
+        const STORAGE_KEY = 'bangkokTripData';
+        const CHECK_KEY_SUFFIX = '_done';
+        const COST_KEY_SUFFIX = '_cost';
+
+        let appData = {};
+        let currentDayIndex = 0;
+        let isEditMode = false;
+        let currentFileSha = ''; // 用於 GitHub API 儲存時的版本控制
+
+        // --- 初始化應用程式 ---
+        document.addEventListener('DOMContentLoaded', async () => {
+            // 在應用程式啟動時，異步載入 GitHub 上的最新資料
+            await initAppDataFromGitHub();
+            
+            initApp();
+            document.getElementById('event-form').addEventListener('submit', handleSaveEvent);
+        });
+
+        // --- 數據持久化 ---
+
+        /**
+         * 1. 載入資料 (從 GitHub)
+         * - 這是新的讀取邏輯，取代了靜態 <script> 標籤和 LocalStorage 讀取主要資料。
+         */
+        async function initAppDataFromGitHub() {
+            showToast('🔄 正在從 GitHub 載入最新行程資料...');
+            try {
+                // 1. 從 Raw URL 載入內容
+                const rawResponse = await fetch(RAW_FILE_URL);
+                if (!rawResponse.ok) {
+                     // 如果 raw 連結無效，嘗試從 API 獲取 SHA 和內容
+                    const apiResponse = await fetch(API_CONTENTS_URL, {
+                        headers: {
+                            'Authorization': `token ${GITHUB_PAT}`,
+                            'Accept': 'application/vnd.github.v3+json'
+                        }
+                    });
+                    
+                    if (!apiResponse.ok) {
+                        throw new Error(`GitHub 讀取錯誤: ${apiResponse.statusText}`);
+                    }
+                    
+                    const apiData = await apiResponse.json();
+                    currentFileSha = apiData.sha;
+                    
+                    // GitHub API 返回的內容是 Base64 編碼，需要解碼
+                    const rawContent = atob(apiData.content); 
+                    appData = parseTripData(rawContent);
+
+                } else {
+                    const rawContent = await rawResponse.text();
+                    appData = parseTripData(rawContent);
+                    
+                    // 2. 順便讀取 SHA (為了寫回，需要 PAT)
+                    const shaResponse = await fetch(API_CONTENTS_URL, {
+                        headers: {
+                            'Authorization': `token ${GITHUB_PAT}`,
+                            'Accept': 'application/vnd.github.v3+json'
+                        }
+                    });
+                    
+                    if (shaResponse.ok) {
+                        const shaData = await shaResponse.json();
+                        currentFileSha = shaData.sha;
+                    } else {
+                        console.error('無法取得 SHA，寫入功能將無法使用！請檢查 PAT 和儲存庫名稱。');
+                    }
+                }
+                
+                showToast('✅ 資料載入成功！');
+                
+            } catch (error) {
+                console.error('無法從 GitHub 載入資料:', error);
+                showToast('❌ 載入失敗！請檢查網路、PAT 或檔案路徑。');
+                
+                // 失敗時，初始化一個空的或備用結構
+                appData = { days: [] }; 
+            }
+        }
+        
+        // 輔助函數：解析 originalTripData.js 的內容
+        function parseTripData(content) {
+            try {
+                // 假設 originalTripData.js 檔案內容格式為: const originalTripData = { ... };
+                const match = content.match(/const originalTripData = (\{[\s\S]*?\});/);
+                if (match && match[1]) {
+                    return JSON.parse(match[1]);
+                }
+                // 如果檔案只是純 JSON (沒有 const originalTripData = )
+                return JSON.parse(content);
+            } catch (e) {
+                console.error("解析資料格式錯誤，請確保 originalTripData.js 格式正確", e);
+                return { days: [] };
+            }
+        }
+        
+        /**
+         * 2. 儲存資料 (寫回 GitHub)
+         * - 使用 GitHub Contents API 的 PUT 方法。
+         */
+        async function saveToGitHub() {
+            if (!currentFileSha || !GITHUB_PAT) {
+                showToast('❌ 無法儲存：缺少 SHA 或 PAT。');
+                return false;
+            }
+            
+            showToast('🔄 正在儲存變更並同步至 GitHub...');
+
+            // 格式化為 originalTripData.js 所需的內容字串
+            const formattedContent = `const originalTripData = ${JSON.stringify(appData, null, 4)};\n`;
+            
+            // 寫入 GitHub API 必須是 Base64 編碼
+            const base64Content = btoa(formattedContent);
+            
+            const payload = {
+                message: `Update data via frontend tool - ${new Date().toLocaleString('zh-TW')}`, 
+                content: base64Content,
+                sha: currentFileSha, // 必須包含當前的 SHA
+                branch: BRANCH
+            };
+
+            try {
+                const response = await fetch(API_CONTENTS_URL, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${GITHUB_PAT}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+                
+                const data = await response.json();
+
+                if (response.ok) {
+                    currentFileSha = data.content.sha; // 更新新的 SHA
+                    showToast('💾 ✅ 數據已成功寫入 GitHub！網頁將在數分鐘後更新。');
+                    return true;
+                } else {
+                    console.error('GitHub 寫入失敗:', data);
+                    // 處理檔案衝突的可能錯誤
+                    if (data.message && data.message.includes('sha')) {
+                        showToast('❌ 儲存失敗：版本衝突！請刷新頁面重試。');
+                    } else {
+                        showToast(`❌ 儲存失敗: ${data.message || response.statusText}`);
+                    }
+                    return false;
+                }
+            } catch (error) {
+                console.error('API 呼叫錯誤:', error);
+                showToast('❌ 網路或 API 呼叫失敗。');
+                return false;
+            }
+        }
+        
+        // 舊的 saveData() 函式現在用於 LocalStorage (僅用於記帳等非核心數據)
+        function saveData() {
+             // 舊的 LocalStorage 儲存邏輯 (僅保留 LocalStorage 中儲存的非核心狀態)
+        }
+        
+        // --- 複製數據功能 (複製到剪貼簿) ---
+        window.copyAppDataToClipboard = function() {
+            // 複製成完整的 JS 檔案格式
+            const dataToCopy = JSON.stringify(appData, null, 4); 
+            const finalString = 'const originalTripData = ' + dataToCopy + ';';
+            
+            const textarea = document.createElement('textarea');
+            textarea.value = finalString;
+            textarea.style.position = 'fixed'; 
+            textarea.style.left = '-9999px'; 
+            document.body.appendChild(textarea);
+            
+            textarea.select();
+            
+            try {
+                // 使用 Clipboard API (更現代)
+                navigator.clipboard.writeText(finalString)
+                    .then(() => {
+                        showToast('✅ 數據已成功複製到剪貼簿！');
+                    })
+                    .catch(err => {
+                        console.error('Copy failed (Clipboard API):', err);
+                        // Fallback to execCommand if Clipboard API fails
+                        const successful = document.execCommand('copy');
+                        if (successful) {
+                            showToast('✅ 數據已成功複製到剪貼簿！');
+                        } else {
+                            showToast('❌ 複製失敗，請手動複製。');
+                        }
+                    });
+            } catch (err) {
+                // Fallback for older browsers
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    showToast('✅ 數據已成功複製到剪貼簿！');
+                } else {
+                    showToast('❌ 複製失敗，請手動複製。');
+                }
+            }
+            
+            document.body.removeChild(textarea);
+        }
+        
+        // ... (其他 showToast 函數不變) ...
+
+
+        // --- 核心應用邏輯 ---
+
+        function initApp() {
+            determineInitialDay();
+            renderNavigation();
+            renderDay(currentDayIndex);
+            updateEditButtonUI();
+        }
+        
+        // ... (determineInitialDay, renderNavigation, updateNavState, renderDay 函數不變) ...
+
+        // --- 編輯模式功能 & 排序 ---
+        
+        // ... (getSortableTime, sortEventsByTime 函數不變) ...
+
+        window.toggleEditMode = async function() {
+            isEditMode = !isEditMode;
+            
+            if (!isEditMode) {
+                // 退出編輯模式時，執行儲存到 GitHub 的操作
+                const saveSuccess = await saveToGitHub();
+                if (saveSuccess) {
+                    // 如果儲存成功，才更新 UI 狀態
+                    updateEditButtonUI();
+                } else {
+                    // 儲存失敗，保持在編輯模式，讓使用者可以重試或複製數據
+                    isEditMode = true; 
+                }
+            } else {
+                // 進入編輯模式，直接更新 UI
+                updateEditButtonUI();
+            }
+            
+            renderDay(currentDayIndex);
+        }
+
+        // ... (updateEditButtonUI, openEditModal, closeEditModal, startEditEvent, startAddEvent 函數不變) ...
+
+        // 儲存事件處理 (包含排序邏輯)
+        function handleSaveEvent(e) {
+            e.preventDefault();
+            
+            const dayIndex = parseInt(document.getElementById('event-day-index').value);
+            const eventIndex = parseInt(document.getElementById('event-index').value);
+
+            const newEvent = {
+                time: document.getElementById('event-time-input').value,
+                location: document.getElementById('event-location-input').value,
+                mapURL: document.getElementById('event-map-url-input').value.trim(),
+                noteURL: document.getElementById('event-note-url-input').value.trim(),
+                transport: document.getElementById('event-transport-input').value,
+                cost: document.getElementById('event-estimated-cost-input').value || '0',
+                notes: document.getElementById('event-notes-input').value
+            };
+
+            if (eventIndex === -1) {
+                // 新增
+                appData.days[dayIndex].events.push(newEvent);
+                showToast('✨ 行程已新增至本地數據。');
+            } else {
+                // 修改
+                appData.days[dayIndex].events[eventIndex] = newEvent;
+                showToast('📝 行程已更新至本地數據。');
+            }
+
+            // 排序當日所有行程
+            sortEventsByTime(appData.days[dayIndex].events);
+
+            // 在這裡不再呼叫 saveData() (因為我們只在退出編輯模式時才寫入 GitHub)
+            closeEditModal();
+            renderDay(dayIndex);
+        }
+
+        // 刪除事件處理
+        window.deleteEvent = function(dayIndex, eventIndex) {
+             if(!confirm("確定要刪除此行程嗎？")) return;
+
+            // 移除行程
+            appData.days[dayIndex].events.splice(eventIndex, 1);
+            showToast('🗑️ 行程已從本地數據刪除。');
+
+            // 刪除相關的 LocalStorage 數據 (記帳/完成狀態)
+            localStorage.removeItem(`trip_d${dayIndex}_e${eventIndex}${CHECK_KEY_SUFFIX}`);
+            localStorage.removeItem(`trip_d${dayIndex}_e${eventIndex}${COST_KEY_SUFFIX}`);
+            
+            // 重新排序並渲染
+            sortEventsByTime(appData.days[dayIndex].events);
+            renderDay(dayIndex);
+        }
+
+
+        // ... (所有與記帳、主題切換、滾動相關的函數保持不變) ...
+        // 包括：highlightKeywords, toggleComplete, enableCostEdit, saveCost, resetDailyCosts, 
+        // themeToggleBtn, updateThemeIcon, 滾動相關邏輯
+    </script>
+</body>
+</html>
