@@ -6,9 +6,11 @@
     <title>曼谷五日自由行</title>
 
     <link rel="stylesheet" href="style.css">
-    </head>
+    <script src="originalTripData.js"></script>
+</head>
 <body>
 
+    <!-- 頂部標題 -->
     <header class="app-header">
         <div class="header-top">
             <div class="header-titles">
@@ -16,19 +18,24 @@
                 <p class="subtitle">11/27 (四) - 12/1 (一)</p>
             </div>
             
+            <!-- 按鈕控制群組 -->
             <div class="header-controls">
 
-                <button id="theme-toggle-btn" class="icon-btn theme-toggle-btn" title="切換深色/淺色主題">
+                <!-- 在 .header-controls 裡面，放在 edit-toggle-btn 前面或後面都可以 -->
+<button id="theme-toggle-btn" class="icon-btn theme-toggle-btn" title="切換深色/淺色主題">
     <svg id="theme-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <!-- 預設顯示月亮 = 深色模式 -->
         <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
     </svg>
 </button>
                 
+                <!-- 🚀 新增：地圖書籤連結 -->
                 <a href="https://www.google.com/maps/d/u/0/edit?mid=1pJlG73WanZkVkTSFvt3GLpMCDVU8heQ&ll=13.798196927110428%2C100.54907266665649&z=17" 
-                    target="_blank" 
-                    id="map-bookmark-btn" 
-                    class="icon-btn map-bookmark-btn" 
-                    title="查看行程地圖書籤">
+                   target="_blank" 
+                   id="map-bookmark-btn" 
+                   class="icon-btn map-bookmark-btn" 
+                   title="查看行程地圖書籤">
+                    <!-- 新的地圖 (Folded Map) 圖標 -->
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6">
                         <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/>
                         <line x1="16" x2="16" y1="2" y2="22"/>
@@ -36,6 +43,7 @@
                     </svg>
                 </a>
                 
+                <!-- 複製數據 (Clipboard Icon) -->
                 <button id="copy-data-btn" class="icon-btn copy-btn" onclick="copyAppDataToClipboard()" title="複製所有數據">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6">
                         <rect width="8" height="4" x="8" y="2" rx="1" ry="1"/>
@@ -43,8 +51,10 @@
                     </svg>
                 </button>
                 
+                <!-- 開啟/結束編輯 (Pencil/Settings Icon) -->
                 <button id="edit-toggle-btn" class="icon-btn edit-toggle-btn" onclick="toggleEditMode()" title="切換編輯模式">
                     <svg id="edit-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6">
+                        <!-- 預設為鉛筆 icon -->
                         <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
                     </svg>
                 </button>
@@ -52,16 +62,22 @@
         </div>
     </header>
     
+    <!-- Toast 通知欄 -->
     <div id="toast-notification"></div>
 
+    <!-- 日期導航欄 -->
     <nav class="day-nav">
         <div class="nav-container" id="nav-container">
-            </div>
+            <!-- JavaScript 將在此處動態生成標籤 -->
+        </div>
     </nav>
 
+    <!-- 主要內容區 -->
     <main id="schedule-container" class="schedule-container">
-        </main>
+        <!-- JavaScript 將在此處渲染當日行程 -->
+    </main>
     
+    <!-- 編輯/新增行程 Modal -->
     <div id="edit-modal" class="edit-modal">
         <div class="modal-content">
             <h3 id="modal-title">編輯行程</h3>
@@ -112,548 +128,380 @@
         </div>
     </div>
 
+    <!-- JavaScript Logic -->
     <script>
-        // --- GitHub 設置 ---
-        // ⚠️ 警示：只有您自己使用這個工具時，才可將 PAT 寫在這裡
-        const GITHUB_PAT = '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';
-        const GITHUB_USER = 'HaoKuan0201';
-        const REPO_NAME = 'BangkokTest';
-        const FILE_PATH = 'originalTripData.js'; // 檔案名稱
-        const BRANCH = 'main'; // 分支名稱 (可能是 main 或 master)
-
-        const RAW_FILE_URL = `https://raw.githubusercontent.com/${GITHUB_USER}/${REPO_NAME}/${BRANCH}/${FILE_PATH}`;
-        const API_CONTENTS_URL = `https://api.github.com/repos/${GITHUB_USER}/${REPO_NAME}/contents/${FILE_PATH}`;
-
         // --- 全局變量和數據處理 ---
         const STORAGE_KEY = 'bangkokTripData';
         const CHECK_KEY_SUFFIX = '_done';
         const COST_KEY_SUFFIX = '_cost';
 
-        // 模擬數據結構 (在 GitHub 載入失敗時使用)
-        const MOCK_DATA = {
-            title: "曼谷五日自由行 (模擬數據)",
-            dateRange: "11/27 (四) - 12/1 (一)",
-            days: [
-                {
-                    dayName: "Day 1",
-                    date: "11/27 (四)",
-                    events: [
-                        { time: "09:00", location: "桃園機場 (TPE)", mapURL: "", noteURL: "", transport: "飛機", cost: "3000", notes: "長榮航空 BR75" },
-                        { time: "12:00", location: "素萬那普機場 (BKK)", mapURL: "", noteURL: "", transport: "機場快線", cost: "45", notes: "辦理落地簽" },
-                        { time: "14:00", location: "Siam Paragon", mapURL: "https://goo.gl/maps/example", noteURL: "", transport: "BTS", cost: "300", notes: "購物中心午餐" }
-                    ]
-                },
-                {
-                    dayName: "Day 2",
-                    date: "11/28 (五)",
-                    events: [
-                        { time: "10:00", location: "大皇宮 (The Grand Palace)", mapURL: "https://goo.gl/maps/example2", noteURL: "", transport: "計程車", cost: "500", notes: "需穿著正式服裝" },
-                        { time: "18:30", location: "Asiatique The Riverfront", mapURL: "https://goo.gl/maps/example3", noteURL: "", transport: "船", cost: "800", notes: "夜市晚餐和摩天輪" }
-                    ]
-                }
-            ]
-        };
-
-        let appData = MOCK_DATA; // 預設為模擬數據，將被 GitHub 數據覆蓋
+        let appData = {};
         let currentDayIndex = 0;
         let isEditMode = false;
-        let currentFileSha = ''; // 用於 GitHub API 儲存時的版本控制
-        
-        // 初始化主題狀態
-        const isDarkMode = localStorage.getItem('theme') === 'dark';
-        if (isDarkMode) {
-            document.documentElement.classList.add('dark-mode');
-        }
 
-        // --- 初始化應用程式 (您原本提供的部分) ---
-        document.addEventListener('DOMContentLoaded', async () => {
-            // 在應用程式啟動時，異步載入 GitHub 上的最新資料
-            await initAppDataFromGitHub();
-            
+        // --- 初始化應用程式 ---
+        document.addEventListener('DOMContentLoaded', () => {
+            appData = loadData();
             initApp();
             document.getElementById('event-form').addEventListener('submit', handleSaveEvent);
-            updateThemeIcon(isDarkMode); // 確保主題按鈕圖標正確
         });
 
-        // --- 數據持久化 (您原本提供的部分) ---
+        // --- 數據持久化 ---
 
-        /**
-         * 1. 載入資料 (從 GitHub)
-         */
-        async function initAppDataFromGitHub() {
-            showToast('🔄 正在從 GitHub 載入最新行程資料...');
-            try {
-                // 1. 從 API 獲取 SHA 和內容 (確保我們能獲取到 SHA，否則無法寫回)
-                const apiResponse = await fetch(API_CONTENTS_URL, {
-                    headers: {
-                        'Authorization': `token ${GITHUB_PAT}`,
-                        'Accept': 'application/vnd.github.v3+json'
+        function loadData() {
+            const storedData = localStorage.getItem(STORAGE_KEY);
+            if (storedData) {
+                try {
+                    const parsedData = JSON.parse(storedData);
+                    if (parsedData.days && parsedData.days.length > 0) {
+                        return parsedData;
                     }
-                });
-                
-                if (!apiResponse.ok) {
-                    throw new Error(`GitHub 讀取錯誤: ${apiResponse.statusText}`);
+                } catch (e) {
+                    console.error("Error parsing stored data, falling back to original data.", e);
                 }
-                
-                const apiData = await apiResponse.json();
-                currentFileSha = apiData.sha;
-                
-                // GitHub API 返回的內容是 Base64 編碼，需要解碼
-                const rawContent = atob(apiData.content); 
-                const loadedData = parseTripData(rawContent);
-
-                // 檢查載入的資料是否有效，如果有效則覆蓋模擬數據
-                if (loadedData && loadedData.days && loadedData.days.length > 0) {
-                    appData = loadedData;
-                    showToast('✅ 資料載入成功！');
-                } else {
-                     showToast('⚠️ GitHub 資料為空或格式錯誤，使用模擬數據。');
-                }
-
-            } catch (error) {
-                console.error('無法從 GitHub 載入資料:', error);
-                showToast('❌ 載入失敗！請檢查網路、PAT 或檔案路徑。將使用模擬數據。');
-                // 失敗時，保持使用 MOCK_DATA
-                appData = MOCK_DATA;
-                currentFileSha = ''; // 寫入功能將被禁用
             }
-            // 更新頁面標題
-            document.querySelector('.header-titles h1').textContent = appData.title || '曼谷五日自由行';
-            document.querySelector('.header-titles .subtitle').textContent = appData.dateRange || '';
+            return originalTripData;
         }
-        
-        // 輔助函數：解析 originalTripData.js 的內容
-        function parseTripData(content) {
-            try {
-                // 假設 originalTripData.js 檔案內容格式為: const originalTripData = { ... };
-                const match = content.match(/const originalTripData = (\{[\s\S]*?\});/);
-                if (match && match[1]) {
-                    return JSON.parse(match[1]);
-                }
-                // 如果檔案只是純 JSON (沒有 const originalTripData = )
-                return JSON.parse(content);
-            } catch (e) {
-                console.error("解析資料格式錯誤，請確保 originalTripData.js 格式正確", e);
-                return { days: [] };
-            }
-        }
-        
-        /**
-         * 2. 儲存資料 (寫回 GitHub)
-         */
-        async function saveToGitHub() {
-            if (!currentFileSha || !GITHUB_PAT) {
-                showToast('❌ 無法儲存：缺少 SHA 或 PAT。');
-                return false;
-            }
-            
-            showToast('🔄 正在儲存變更並同步至 GitHub...');
 
-            // 格式化為 originalTripData.js 所需的內容字串
-            const formattedContent = `const originalTripData = ${JSON.stringify(appData, null, 4)};\n`;
-            
-            // 寫入 GitHub API 必須是 Base64 編碼
-            const base64Content = btoa(formattedContent);
-            
-            const payload = {
-                message: `Update data via frontend tool - ${new Date().toLocaleString('zh-TW')}`, 
-                content: base64Content,
-                sha: currentFileSha, // 必須包含當前的 SHA
-                branch: BRANCH
-            };
-
-            try {
-                const response = await fetch(API_CONTENTS_URL, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `token ${GITHUB_PAT}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
-                });
-                
-                const data = await response.json();
-
-                if (response.ok) {
-                    currentFileSha = data.content.sha; // 更新新的 SHA
-                    showToast('💾 ✅ 數據已成功寫入 GitHub！網頁將在數分鐘後更新。');
-                    return true;
-                } else {
-                    console.error('GitHub 寫入失敗:', data);
-                    // 處理檔案衝突的可能錯誤
-                    if (data.message && data.message.includes('sha')) {
-                        showToast('❌ 儲存失敗：版本衝突！請刷新頁面重試。');
-                    } else {
-                        showToast(`❌ 儲存失敗: ${data.message || response.statusText}`);
-                    }
-                    return false;
-                }
-            } catch (error) {
-                console.error('API 呼叫錯誤:', error);
-                showToast('❌ 網路或 API 呼叫失敗。');
-                return false;
-            }
-        }
-        
-        // 舊的 saveData() 函式 (保留其定義，但此處不會執行核心數據儲存，只用於 LocalStorage 狀態)
         function saveData() {
-             // 此處僅作為佔位符，如果原程式碼有其他 LocalStorage 邏輯（如滾動位置）則會放在這裡
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
         }
         
-        // --- 複製數據功能 (您原本提供的部分) ---
+        // --- 複製數據功能 (複製到剪貼簿) ---
         window.copyAppDataToClipboard = function() {
-            // ... (複製數據邏輯，略過與原始碼相同部分) ...
+            // 確保 appData 是最新的
             const dataToCopy = JSON.stringify(appData, null, 4); 
-            const finalString = 'const originalTripData = ' + dataToCopy + ';';
             
+            // 使用 execCommand('copy') 來複製到剪貼簿 (在 Canvas 環境中通常更可靠)
             const textarea = document.createElement('textarea');
-            textarea.value = finalString;
-            textarea.style.position = 'fixed'; 
-            textarea.style.left = '-9999px'; 
+            textarea.value = 'const originalTripData = ' + dataToCopy + ';';
+            textarea.style.position = 'fixed'; // 防止滾動
+            textarea.style.left = '-9999px'; // 移到螢幕外
             document.body.appendChild(textarea);
             
             textarea.select();
             
             try {
-                // 使用 Clipboard API
-                navigator.clipboard.writeText(finalString)
-                    .then(() => {
-                        showToast('✅ 數據已成功複製到剪貼簿！');
-                    })
-                    .catch(err => {
-                        console.error('Copy failed (Clipboard API):', err);
-                        const successful = document.execCommand('copy');
-                        if (successful) {
-                            showToast('✅ 數據已成功複製到剪貼簿！');
-                        } else {
-                            showToast('❌ 複製失敗，請手動複製。');
-                        }
-                    });
-            } catch (err) {
-                // Fallback for older browsers
                 const successful = document.execCommand('copy');
                 if (successful) {
                     showToast('✅ 數據已成功複製到剪貼簿！');
                 } else {
                     showToast('❌ 複製失敗，請手動複製。');
                 }
+            } catch (err) {
+                console.error('Copy command failed:', err);
+                showToast('❌ 複製失敗，請手動複製。');
             }
             
             document.body.removeChild(textarea);
         }
-
-        // --- 核心輔助功能 (缺失部分) ---
         
-        /**
-         * 顯示 Toast 通知
-         */
-        let toastTimeout;
+        // 顯示 Toast 通知
         function showToast(message) {
             const toast = document.getElementById('toast-notification');
-            clearTimeout(toastTimeout);
             toast.textContent = message;
-            toast.classList.add('show');
+            toast.classList.add('visible');
             
-            toastTimeout = setTimeout(() => {
-                toast.classList.remove('show');
+            clearTimeout(window.toastTimeout);
+            window.toastTimeout = setTimeout(() => {
+                toast.classList.remove('visible');
             }, 3000);
         }
 
-        /**
-         * 確定應用程式啟動時應顯示哪一天的行程
-         */
+
+        // --- 核心應用邏輯 ---
+
+        function initApp() {
+            determineInitialDay();
+            renderNavigation();
+            renderDay(currentDayIndex);
+            updateEditButtonUI();
+        }
+        
+        // 1. 自動判斷當前日期
         function determineInitialDay() {
             const today = new Date();
-            today.setHours(0, 0, 0, 0); 
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            const todayStr = `${year}-${month}-${day}`;
 
-            // 尋找最近或當天的日期
-            const closestDayIndex = appData.days.findIndex(day => {
-                const dayDate = new Date(day.date.split('(')[0].trim() + ' ' + today.getFullYear());
-                dayDate.setHours(0, 0, 0, 0); 
-                return dayDate >= today;
-            });
-
-            currentDayIndex = closestDayIndex !== -1 ? closestDayIndex : 0;
+            const foundIndex = appData.days.findIndex(d => d.fullDate === todayStr);
+            
+            if (foundIndex !== -1) {
+                currentDayIndex = foundIndex;
+            } else {
+                currentDayIndex = 0; // 默認為第一天
+            }
         }
 
-        /**
-         * 渲染導航按鈕
-         */
+        // 2. 渲染導航欄
         function renderNavigation() {
             const navContainer = document.getElementById('nav-container');
             navContainer.innerHTML = '';
+
+            appData.days.forEach((dayData, index) => {
+                const btn = document.createElement('button');
+                btn.className = `nav-btn ${index === currentDayIndex ? 'active' : ''}`;
+                btn.textContent = `${dayData.day} (${dayData.date.split(' ')[0]})`;
+                btn.onclick = () => {
+                    currentDayIndex = index;
+                    updateNavState();
+                    renderDay(index);
+                };
+                navContainer.appendChild(btn);
+            });
             
-            appData.days.forEach((day, index) => {
-                const button = document.createElement('button');
-                button.className = `nav-btn text-sm sm:text-base ${index === currentDayIndex ? 'active' : ''}`;
-                button.textContent = `${day.dayName} ${day.date.split('(')[0]}`; // 只顯示日期部分
-                button.onclick = () => switchDay(index);
-                navContainer.appendChild(button);
-            });
-            updateNavState();
+            setTimeout(updateNavState, 100);
         }
 
-        /**
-         * 更新導航按鈕的 active 狀態
-         */
         function updateNavState() {
-            document.querySelectorAll('.nav-btn').forEach((btn, index) => {
-                btn.classList.toggle('active', index === currentDayIndex);
+            const btns = document.querySelectorAll('.nav-btn');
+            btns.forEach((btn, index) => {
+                if (index === currentDayIndex) {
+                    btn.classList.add('active');
+                    btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+                } else {
+                    btn.classList.remove('active');
+                }
             });
-            // 滾動到選定的按鈕
-            const activeBtn = document.querySelector('.nav-btn.active');
-            if (activeBtn) {
-                activeBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
-            }
         }
 
-        /**
-         * 切換顯示的行程日
-         */
-        window.switchDay = function(index) {
-            currentDayIndex = index;
-            renderDay(currentDayIndex);
-            updateNavState();
-        }
-
-        /**
-         * 渲染特定一天的行程內容
-         */
+        // 3. 渲染當日行程
         function renderDay(dayIndex) {
             const container = document.getElementById('schedule-container');
             const dayData = appData.days[dayIndex];
+            
             container.innerHTML = '';
 
-            if (!dayData) {
-                 container.innerHTML = `<div class="p-6 text-center text-gray-500 dark:text-gray-400">目前沒有可用的行程數據。請檢查 GitHub 連線或進入編輯模式新增。</div>`;
-                 return;
-            }
-            
-            // 確保每次渲染前都進行排序
-            sortEventsByTime(dayData.events);
+            const themeHeader = document.createElement('div');
+            themeHeader.style.textAlign = 'center';
+            themeHeader.innerHTML = `<h2 class="day-theme">${dayData.theme}</h2>`;
+            container.appendChild(themeHeader);
 
-            let totalEstimatedCost = 0;
-            let totalActualCost = 0;
+            const timeline = document.createElement('div');
+            timeline.className = 'timeline';
 
-            // 建立日行程區塊
-            const daySection = document.createElement('div');
-            daySection.id = `day-${dayIndex}`;
-            daySection.className = 'day-section';
-            
-            // 標題和新增按鈕
-            daySection.innerHTML = `
-                <h2 class="flex justify-between items-center text-2xl">
-                    ${dayData.dayName} - ${dayData.date}
-                    ${isEditMode ? `<button onclick="startAddEvent(${dayIndex})" class="text-sm px-3 py-1 bg-green-500 hover:bg-green-600 text-white rounded-lg transition duration-150">
-                        + 新增行程
-                    </button>` : ''}
-                </h2>
-                <div class="event-list"></div>
-                <div class="summary-block mt-6 p-4 rounded-lg bg-indigo-100 dark:bg-indigo-900 shadow-inner">
-                    <p class="text-lg font-bold">每日花費總結 (泰銖)</p>
-                    <p class="text-sm mt-1">
-                        預估總花費: <span class="font-semibold text-red-600 dark:text-red-400" id="estimated-cost-${dayIndex}">0</span>
-                    </p>
-                    <p class="text-xl font-extrabold mt-2 total-cost-display">
-                        實際總花費: <span id="actual-cost-${dayIndex}">0</span> 
-                        <button onclick="resetDailyCosts(${dayIndex})" title="重設實際花費" class="text-xs text-gray-500 dark:text-gray-400 ml-2 hover:text-red-500">
-                            [重設]
-                        </button>
-                    </p>
-                </div>
-            `;
-            const eventList = daySection.querySelector('.event-list');
+            let dailyTotal = 0;
 
             dayData.events.forEach((event, eventIndex) => {
-                // 從 LocalStorage 獲取完成狀態和實際花費
-                const isCompleted = localStorage.getItem(`trip_d${dayIndex}_e${eventIndex}${CHECK_KEY_SUFFIX}`) === 'true';
-                const actualCost = localStorage.getItem(`trip_d${dayIndex}_e${eventIndex}${COST_KEY_SUFFIX}`) || event.cost;
+                const storageKeyPrefix = `trip_d${dayIndex}_e${eventIndex}`;
+                const isCompleted = localStorage.getItem(`${storageKeyPrefix}${CHECK_KEY_SUFFIX}`) === 'true';
+                const storedCost = localStorage.getItem(`${storageKeyPrefix}${COST_KEY_SUFFIX}`);
                 
-                // 計算總和
-                totalEstimatedCost += parseInt(event.cost || 0);
-                totalActualCost += parseInt(actualCost || 0);
+                const displayCost = storedCost !== null ? storedCost : '';
+                // 檢查 storedCost 是否為有效數字，以累加到 dailyTotal
+                if (storedCost && !isNaN(parseInt(storedCost))) dailyTotal += parseInt(storedCost);
 
-                // 實際花費的顯示/編輯 UI
-                let costHtml = `<span id="cost-display-${dayIndex}-${eventIndex}" 
-                                        class="cost-display cursor-pointer" 
-                                        onclick="enableCostEdit(${dayIndex}, ${eventIndex}, ${event.cost || 0})">
-                                        THB ${actualCost}
-                                    </span>`;
+                const card = document.createElement('div');
+                card.className = `event-card ${isCompleted ? 'completed' : ''}`;
+                card.id = `card-${dayIndex}-${eventIndex}`;
+
+                let transportIcon = '🚶';
+                let transportClass = 'trans-walk';
+                const t = event.transport ? event.transport.toLowerCase() : '';
                 
-                // 連結 HTML 處理
-                const mapLink = event.mapURL ? 
-                    `<a href="${event.mapURL}" target="_blank" class="text-blue-500 hover:underline flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13 18a2 2 0 1 1-4 0"/></svg>
-                        地圖
-                    </a>` : '';
-                const noteLink = event.noteURL ? 
-                    `<a href="${event.noteURL}" target="_blank" class="text-green-600 hover:underline flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6m-3 7h-6m3-3v6"/></svg>
-                        備註/預訂
-                    </a>` : '';
-
-                // 編輯模式按鈕
-                let editActionsHtml = '';
-                if (isEditMode) {
-                    editActionsHtml = `
-                        <button onclick="startEditEvent(${dayIndex}, ${eventIndex})" class="action-btn edit-btn flex items-center">
-                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/></svg>
-                             編輯
-                        </button>
-                        <button onclick="deleteEvent(${dayIndex}, ${eventIndex})" class="action-btn delete-btn flex items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18m-2 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m-6 5v6m4-6v6"/></svg>
-                            刪除
-                        </button>
-                    `;
+                if (t.includes('bts') || t.includes('mrt')) {
+                    transportIcon = '🚆';
+                    transportClass = 'trans-bts';
+                } else if (t.includes('船') || t.includes('渡輪') || t.includes('ferry')) {
+                    transportIcon = '⛴️';
+                    transportClass = 'trans-boat';
+                } else if (t.includes('bolt') || t.includes('包車') || t.includes('公車') || t.includes('car')) {
+                    transportIcon = '🚗';
+                    transportClass = 'trans-car';
+                }
+                else if (t.includes('飛機')) {
+                    transportIcon = '✈️';
+                    transportClass = 'trans-bts';
                 }
 
-                const eventHtml = `
-                    <div class="event-card ${isCompleted ? 'completed' : ''}" data-day="${dayIndex}" data-index="${eventIndex}">
-                        
-                        <!-- 左側時間與完成狀態 -->
-                        <div class="flex flex-col items-center flex-shrink-0">
-                            <button onclick="toggleComplete(${dayIndex}, ${eventIndex})" 
-                                    class="text-gray-400 hover:text-green-500 transition duration-150">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 ${isCompleted ? 'text-green-500' : 'text-gray-400'}" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm3.707 7.707-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L11 12.586l3.293-3.293a1 1 0 0 1 1.414 1.414z"/></svg>
+                const highlightedNotes = highlightKeywords(event.notes);
+                
+                let headerContent = '';
+                if (isEditMode) {
+                    headerContent = `
+                        <div class="edit-controls">
+                            <button onclick="startEditEvent(${dayIndex}, ${eventIndex})" class="edit-icon" title="編輯行程">
+                                ✏️
                             </button>
-                            <div class="event-time mt-1">${event.time}</div>
+                            <button onclick="deleteEvent(${dayIndex}, ${eventIndex})" class="delete-icon" title="刪除行程">
+                                🗑️
+                            </button>
                         </div>
+                    `;
+                } 
+                // else {
+                //     headerContent = `
+                //         <label class="checkbox-wrapper">
+                //             <input type="checkbox" ${isCompleted ? 'checked' : ''} 
+                //                 onchange="toggleComplete(${dayIndex}, ${eventIndex}, this)">
+                //         </label>
+                //     `;
+                // }
 
-                        <!-- 中間內容 -->
-                        <div class="event-details">
-                            <div class="event-location">${highlightKeywords(event.location)}</div>
-                            <div class="flex gap-4 text-xs mt-1 text-gray-500 dark:text-gray-300">
-                                <span class="flex items-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 11h2l-2 3M17 11v-4M17 11h-2m-2-2h-2l-2 3M13 7v-4M13 7h-2M13 7h2m-4 4h-2l-2 3M9 11v-4M9 11h-2M9 11h2m-4 4h-2l-2 3M5 15v-4M5 15h-2M5 15h2"/></svg>
-                                    ${event.transport}
-                                </span>
-                                ${mapLink}
-                                ${noteLink}
-                            </div>
-                            <div class="event-info text-sm text-gray-700 dark:text-gray-200">${event.notes || ''}</div>
-                        </div>
+                // 地圖圖標和連結
+                const mapIconHTML = event.mapURL ? `
+                    <a href="${event.mapURL}" target="_blank" class="map-icon" title="查看地圖">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                        </svg>
+                    </a>
+                ` : '';
 
-                        <!-- 右側花費和編輯按鈕 -->
-                        <div class="event-actions">
-                            <div class="text-xs font-medium text-gray-500 dark:text-gray-400">預估: THB ${event.cost}</div>
-                            ${costHtml}
-                            ${editActionsHtml}
+                // 備註連結圖標和連結
+                const noteIconHTML = event.noteURL ? `
+                    <a href="${event.noteURL}" target="_blank" class="note-icon" title="查看備註連結">
+                        🚀
+                    </a>
+                ` : '';
+
+
+                card.innerHTML = `
+                    <div class="event-header">
+                        <span class="event-time">${event.time}</span>
+                        ${headerContent}
+                    </div>
+                    
+                    <div class="event-location-group">
+                        <div class="event-location">${event.location}</div>
+                        ${mapIconHTML}
+                        ${noteIconHTML}
+                    </div>
+                    
+                    <div class="event-details">
+                        <span class="badge ${transportClass}">${transportIcon} ${event.transport}</span>
+                        <div class="cost-section" onclick="enableCostEdit(${dayIndex}, ${eventIndex}, this)">
+                            <span id="cost-display-${dayIndex}-${eventIndex}">
+                                ${storedCost ? `實支: ฿${storedCost}` : `預估: ฿${event.cost}`}
+                            </span>
                         </div>
                     </div>
+
+                    <div class="event-notes">${highlightedNotes}</div>
                 `;
-                eventList.insertAdjacentHTML('beforeend', eventHtml);
+
+                timeline.appendChild(card);
             });
 
-            // 更新總結區塊
-            document.getElementById(`estimated-cost-${dayIndex}`).textContent = totalEstimatedCost;
-            document.getElementById(`actual-cost-${dayIndex}`).textContent = totalActualCost;
+            container.appendChild(timeline);
             
-            container.appendChild(daySection);
-            
-            // 每次渲染後更新導航狀態
-            updateNavState();
+            // 編輯模式下顯示新增按鈕
+            if (isEditMode) {
+                const addBtn = document.createElement('button');
+                addBtn.className = 'add-event-btn';
+                addBtn.textContent = '+ 新增行程';
+                addBtn.onclick = () => startAddEvent(dayIndex);
+                container.appendChild(addBtn);
+            }
+
+            // 每日總結
+            const summary = document.createElement('div');
+            summary.className = 'daily-summary';
+            summary.innerHTML = `
+                <div class="total-label">本日實際總花費</div>
+                <div class="total-amount">฿${dailyTotal}</div>
+                <button class="reset-btn" onclick="resetDailyCosts(${dayIndex})">重置本日花費</button>
+            `;
+            container.appendChild(summary);
         }
 
-        /**
-         * 將時間字串轉換為可排序的數字
-         */
-        function getSortableTime(time) {
-            if (!time) return 99999; // 將無時間的項目排到最後
-            const [start, end] = time.split('-');
-            const [hours, minutes] = start.split(':').map(Number);
-            return hours * 60 + minutes;
+        // --- 編輯模式功能 & 排序 ---
+        
+        // 輔助函數：取得用於排序的時間（取時間範圍的起始時間）
+        function getSortableTime(timeStr) {
+            // 確保 timeStr 存在且是字串
+            if (!timeStr || typeof timeStr !== 'string') return '99:99'; 
+            
+            // 如果是時間範圍 (例如 "09:00-10:00")，只取起始時間 ("09:00")
+            const parts = timeStr.split('-');
+            return parts[0].trim();
         }
 
-        /**
-         * 根據時間對行程進行排序
-         */
+        // 核心排序函數：依時間排序行程
         function sortEventsByTime(events) {
-            events.sort((a, b) => getSortableTime(a.time) - getSortableTime(b.time));
-        }
+            events.sort((a, b) => {
+                const timeA = getSortableTime(a.time);
+                const timeB = getSortableTime(b.time);
 
-        /**
-         * 高亮地點名稱中的關鍵字 (例如：BTS, MRT)
-         */
-        function highlightKeywords(location) {
-            if (!location) return '';
-            const keywords = ['BTS', 'MRT', '機場', '酒店', '飯店', '捷運'];
-            let result = location;
-            keywords.forEach(keyword => {
-                const regex = new RegExp(`(${keyword})`, 'gi');
-                result = result.replace(regex, `<span class="bg-yellow-200 dark:bg-yellow-600 font-bold rounded-sm p-0.5">$1</span>`);
+                // 標準字串比較對 HH:MM 格式有效
+                if (timeA < timeB) {
+                    return -1;
+                }
+                if (timeA > timeB) {
+                    return 1;
+                }
+                // 時間相同時不改變順序
+                return 0;
             });
-            return result;
         }
 
-        // --- 編輯模式控制 (您提供的部分) ---
+        window.toggleEditMode = function() {
+            isEditMode = !isEditMode;
+            updateEditButtonUI();
+            renderDay(currentDayIndex);
+        }
 
-        /**
-         * 切換編輯模式的 UI
-         */
         function updateEditButtonUI() {
             const btn = document.getElementById('edit-toggle-btn');
-            const icon = document.getElementById('edit-icon');
-            
+            const iconElement = document.getElementById('edit-icon');
+
             if (isEditMode) {
-                btn.classList.add('bg-red-500', 'text-white', 'shadow-lg');
-                btn.classList.remove('text-gray-500');
-                btn.title = "儲存並退出編輯模式";
-                // 替換為儲存圖標 (Save/Disk)
-                icon.innerHTML = `<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>`;
+                btn.classList.add('active');
+                btn.title = '結束編輯模式';
+                // 切換為 Save/Check 圖標 (表示進入編輯/保存狀態)
+                iconElement.innerHTML = `<path d="M5 12l5 5l8-8"/>`; 
             } else {
-                btn.classList.remove('bg-red-500', 'text-white', 'shadow-lg');
-                btn.classList.add('text-gray-500');
-                btn.title = "切換編輯模式";
-                // 替換為鉛筆圖標 (Edit)
-                icon.innerHTML = `<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>`;
+                btn.classList.remove('active');
+                btn.title = '切換編輯模式';
+                // 切換回 Pencil 圖標
+                iconElement.innerHTML = `<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>`;
             }
         }
-
-        /**
-         * 開啟編輯彈窗
-         */
-        function openEditModal(dayIndex, eventIndex = -1, event = {}) {
-            document.getElementById('edit-modal').classList.add('open');
-            document.getElementById('modal-title').textContent = eventIndex === -1 ? '新增行程' : '編輯行程';
-
-            // 設置隱藏欄位
+        
+        // 打開編輯/新增 Modal
+        function openEditModal(dayIndex, eventIndex, isNew = false) {
+            const modal = document.getElementById('edit-modal');
+            const form = document.getElementById('event-form');
+            const title = document.getElementById('modal-title');
+            
+            // 重設表單
+            form.reset();
+            
             document.getElementById('event-day-index').value = dayIndex;
-            document.getElementById('event-index').value = eventIndex;
+            document.getElementById('event-index').value = eventIndex !== null ? eventIndex : -1;
 
-            // 填充表單
-            document.getElementById('event-time-input').value = event.time || '';
-            document.getElementById('event-location-input').value = event.location || '';
-            document.getElementById('event-map-url-input').value = event.mapURL || '';
-            document.getElementById('event-note-url-input').value = event.noteURL || '';
-            document.getElementById('event-transport-input').value = event.transport || '';
-            document.getElementById('event-estimated-cost-input').value = event.cost || '0';
-            document.getElementById('event-notes-input').value = event.notes || '';
+            if (isNew) {
+                title.textContent = '新增行程';
+                document.getElementById('event-estimated-cost-input').value = '0'; // 預設成本為 0
+            } else {
+                title.textContent = '編輯行程';
+                const event = appData.days[dayIndex].events[eventIndex];
+                document.getElementById('event-time-input').value = event.time;
+                document.getElementById('event-location-input').value = event.location;
+                document.getElementById('event-map-url-input').value = event.mapURL || '';
+                document.getElementById('event-note-url-input').value = event.noteURL || '';
+                document.getElementById('event-transport-input').value = event.transport;
+                document.getElementById('event-estimated-cost-input').value = event.cost;
+                document.getElementById('event-notes-input').value = event.notes;
+            }
+
+            modal.classList.add('visible');
         }
 
-        /**
-         * 關閉編輯彈窗
-         */
         window.closeEditModal = function() {
-            document.getElementById('edit-modal').classList.remove('open');
-            document.getElementById('event-form').reset();
-        }
-
-        /**
-         * 開始編輯現有行程
-         */
-        window.startEditEvent = function(dayIndex, eventIndex) {
-            const event = appData.days[dayIndex].events[eventIndex];
-            openEditModal(dayIndex, eventIndex, event);
-        }
-
-        /**
-         * 開始新增行程
-         */
-        window.startAddEvent = function(dayIndex) {
-            openEditModal(dayIndex, -1, {});
+            document.getElementById('edit-modal').classList.remove('visible');
         }
         
-        // 儲存事件處理 (您提供的部分)
+        window.startEditEvent = function(dayIndex, eventIndex) {
+            openEditModal(dayIndex, eventIndex, false);
+        }
+
+        window.startAddEvent = function(dayIndex) {
+            openEditModal(dayIndex, null, true);
+        }
+
+        // 儲存事件處理 (包含排序邏輯)
         function handleSaveEvent(e) {
             e.preventDefault();
             
@@ -673,30 +521,30 @@
             if (eventIndex === -1) {
                 // 新增
                 appData.days[dayIndex].events.push(newEvent);
-                showToast('✨ 行程已新增至本地數據。');
             } else {
                 // 修改
                 appData.days[dayIndex].events[eventIndex] = newEvent;
-                showToast('📝 行程已更新至本地數據。');
             }
 
             // 排序當日所有行程
             sortEventsByTime(appData.days[dayIndex].events);
 
+            saveData();
             closeEditModal();
             renderDay(dayIndex);
         }
 
-        // 刪除事件處理 (您提供的部分 - 已將 confirm 替換為自定義 modal 概念，這裡用 window.confirm 暫代)
+        // 刪除事件處理
         window.deleteEvent = function(dayIndex, eventIndex) {
-            // 注意：在實際的 Canvas 環境中，應該使用自定義 modal 取代 window.confirm
-            if(!window.confirm("確定要刪除此行程嗎？")) return;
+            // NOTE: 使用瀏覽器內建的 confirm() 在 iFrame 環境中可能不可見，但此處作為範例暫時保留。
+            // 建議在實際應用中替換為自定義 Modal。
+            if(!confirm("確定要刪除此行程嗎？")) return;
 
             // 移除行程
             appData.days[dayIndex].events.splice(eventIndex, 1);
-            showToast('🗑️ 行程已從本地數據刪除。');
-
-            // 刪除相關的 LocalStorage 數據 (記帳/完成狀態)
+            saveData();
+            
+            // 刪除相關的 LocalStorage 數據
             localStorage.removeItem(`trip_d${dayIndex}_e${eventIndex}${CHECK_KEY_SUFFIX}`);
             localStorage.removeItem(`trip_d${dayIndex}_e${eventIndex}${COST_KEY_SUFFIX}`);
             
@@ -704,120 +552,160 @@
             sortEventsByTime(appData.days[dayIndex].events);
             renderDay(dayIndex);
         }
-        
-        // --- 記帳與完成狀態功能 (缺失部分) ---
 
-        /**
-         * 切換行程的完成狀態
-         */
-        window.toggleComplete = function(dayIndex, eventIndex) {
-            const key = `trip_d${dayIndex}_e${eventIndex}${CHECK_KEY_SUFFIX}`;
-            const isCompleted = localStorage.getItem(key) === 'true';
+        // --- 記帳功能 (保留原有功能) ---
+
+        // 高亮關鍵字
+        function highlightKeywords(text) {
+            if (!text) return "";
+            const keywords = [
+                "免費廁所", "收費廁所", "廁所沒衛生紙", "廁所", 
+                "17點關門", "10點才開", "17點前要入場",
+                "1號出口", "2號出口", "4號出口", "GF 2號門", 
+                "先去換匯", "換匯",
+                "左邊"
+            ];
             
-            if (isCompleted) {
-                localStorage.removeItem(key);
-                showToast('⏰ 行程標記為未完成。');
-            } else {
-                localStorage.setItem(key, 'true');
-                showToast('✅ 行程已完成！');
-            }
-            renderDay(dayIndex);
-        }
-
-        /**
-         * 啟用實際花費編輯
-         */
-        window.enableCostEdit = function(dayIndex, eventIndex, defaultCost) {
-            const displayId = `cost-display-${dayIndex}-${eventIndex}`;
-            const displayElement = document.getElementById(displayId);
-            
-            // 避免重複編輯
-            if (displayElement.querySelector('input')) return;
-
-            const currentCost = localStorage.getItem(`trip_d${dayIndex}_e${eventIndex}${COST_KEY_SUFFIX}`) || defaultCost;
-            
-            displayElement.innerHTML = `
-                <input type="number" 
-                       id="cost-input-${dayIndex}-${eventIndex}" 
-                       value="${currentCost}" 
-                       min="0"
-                       class="w-20 p-1 text-sm border border-blue-400 rounded-md text-gray-800"
-                       onblur="saveCost(${dayIndex}, ${eventIndex}, ${defaultCost})"
-                       onkeydown="if(event.key === 'Enter'){ saveCost(${dayIndex}, ${eventIndex}, ${defaultCost}); event.target.blur(); }">
-            `;
-            // 焦點移到輸入框
-            document.getElementById(`cost-input-${dayIndex}-${eventIndex}`).focus();
-        }
-
-        /**
-         * 儲存實際花費
-         */
-        window.saveCost = function(dayIndex, eventIndex, defaultCost) {
-            const inputId = `cost-input-${dayIndex}-${eventIndex}`;
-            const inputElement = document.getElementById(inputId);
-            const displayId = `cost-display-${dayIndex}-${eventIndex}`;
-            const displayElement = document.getElementById(displayId);
-
-            if (!inputElement) return;
-
-            let newCost = parseInt(inputElement.value || 0);
-            
-            localStorage.setItem(`trip_d${dayIndex}_e${eventIndex}${COST_KEY_SUFFIX}`, newCost);
-
-            // 重新渲染顯示元素
-            displayElement.innerHTML = `THB ${newCost}`;
-            displayElement.className = 'cost-display cursor-pointer';
-
-            showToast(`💰 實際花費已更新為 THB ${newCost}`);
-            renderDay(dayIndex); // 重新計算總和
-        }
-
-        /**
-         * 重設當天所有行程的實際花費
-         */
-        window.resetDailyCosts = function(dayIndex) {
-            if(!window.confirm(`確定要將 Day ${dayIndex + 1} 的所有實際花費重設為預估值嗎？這會清除所有紀錄。`)) return;
-
-            appData.days[dayIndex].events.forEach((event, eventIndex) => {
-                localStorage.removeItem(`trip_d${dayIndex}_e${eventIndex}${COST_KEY_SUFFIX}`);
+            let processedText = text;
+            keywords.forEach(keyword => {
+                const regex = new RegExp(`(${keyword})`, 'g');
+                processedText = processedText.replace(regex, '<span class="highlight">$1</span>');
             });
-            showToast('🔄 每日花費已重設。');
-            renderDay(dayIndex);
-        }
-        
-        // --- 主題切換功能 (缺失部分) ---
-        
-        /**
-         * 切換深色/淺色主題
-         */
-        window.toggleTheme = function() {
-            const isDark = document.documentElement.classList.toggle('dark-mode');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            updateThemeIcon(isDark);
+            return processedText;
         }
 
-        /**
-         * 更新主題按鈕的圖標
-         */
-        function updateThemeIcon(isDark) {
-            const icon = document.getElementById('theme-icon');
-            if (isDark) {
-                // 月亮圖標 (Dark Mode)
-                icon.innerHTML = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>`;
+        // 切換完成狀態
+        window.toggleComplete = function(dayIndex, eventIndex, checkbox) {
+            if (isEditMode) return; // 編輯模式下禁用打勾
+            const card = document.getElementById(`card-${dayIndex}-${eventIndex}`);
+            const key = `trip_d${dayIndex}_e${eventIndex}${CHECK_KEY_SUFFIX}`;
+            
+            if (checkbox.checked) {
+                localStorage.setItem(key, 'true');
+                card.classList.add('completed');
             } else {
-                // 太陽圖標 (Light Mode)
-                icon.innerHTML = `<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>`;
+                localStorage.removeItem(key);
+                card.classList.remove('completed');
             }
-        }
+        };
 
-        // --- 啟動函式 ---
-        function initApp() {
-            determineInitialDay();
-            renderNavigation();
-            renderDay(currentDayIndex);
-            updateEditButtonUI();
-        }
+        // 啟用費用編輯
+        window.enableCostEdit = function(dayIndex, eventIndex, element) {
+            if (isEditMode) return; // 編輯模式下禁用記帳編輯
+            if (element.querySelector('input')) return;
 
+            const displaySpan = document.getElementById(`cost-display-${dayIndex}-${eventIndex}`);
+            const savedCost = localStorage.getItem(`trip_d${dayIndex}_e${eventIndex}${COST_KEY_SUFFIX}`);
+            const initialValue = savedCost ? savedCost : '';
+
+            element.innerHTML = `
+                <input type="number" class="cost-input" value="${initialValue}" 
+                placeholder="金額" 
+                onblur="saveCost(${dayIndex}, ${eventIndex}, this)" 
+                onkeydown="if(event.key === 'Enter') this.blur()">
+            `;
+            
+            const input = element.querySelector('input');
+            input.focus();
+        };
+
+        // 儲存費用並重繪
+        window.saveCost = function(dayIndex, eventIndex, input) {
+            const val = input.value;
+            const key = `trip_d${dayIndex}_e${eventIndex}${COST_KEY_SUFFIX}`;
+
+            if (val && val.trim() !== "" && parseInt(val) >= 0) {
+                localStorage.setItem(key, val);
+            } else {
+                localStorage.removeItem(key);
+            }
+
+            renderDay(dayIndex);
+        };
+
+        // 重置當日花費
+        window.resetDailyCosts = function(dayIndex) {
+            // NOTE: 使用瀏覽器內建的 confirm() 在 iFrame 環境中可能不可見，但此處作為範例暫時保留。
+            // 建議在實際應用中替換為自定義 Modal。
+            if(!confirm("確定要重置今天的記帳數據嗎？")) return;
+            
+            const dayData = appData.days[dayIndex];
+            dayData.events.forEach((_, eIndex) => {
+                localStorage.removeItem(`trip_d${dayIndex}_e${eIndex}${COST_KEY_SUFFIX}`);
+            });
+            renderDay(dayIndex);
+        };
+
+        // 主題切換（預設深色）
+    const themeToggleBtn = document.getElementById('theme-toggle-btn');
+    const themeIcon = document.getElementById('theme-icon');
+
+    // 讀取上次選擇，沒有的話預設 deep dark
+    const savedTheme = localStorage.getItem('theme') || 'dark';
+    document.body.setAttribute('data-theme', savedTheme);
+    updateThemeIcon(savedTheme);
+
+    themeToggleBtn.addEventListener('click', () => {
+        const current = document.body.getAttribute('data-theme');
+        const newTheme = current === 'dark' ? 'light' : 'dark';
+        
+        document.body.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateThemeIcon(newTheme);
+    });
+
+    function updateThemeIcon(theme) {
+        if (theme === 'dark') {
+            // 月亮 = 深色
+            themeIcon.innerHTML = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>`;
+        } else {
+            // 太陽 = 淺色
+            themeIcon.innerHTML = `
+                <circle cx="12" cy="12" r="5"/>
+                <line x1="12" y1="1" x2="12" y2="3"/>
+                <line x1="12" y1="21" x2="12" y2="23"/>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                <line x1="1" y1="12" x2="3" y2="12"/>
+                <line x1="21" y1="12" x2="23" y2="12"/>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            `;
+        }
+    }
+
+        // === 日期導航欄 滾動向上自動隱藏（超順滑）===
+    let lastScrollY = window.scrollY;
+    const dayNav = document.querySelector('.day-nav');
+
+    window.addEventListener('scroll', () => {
+        const currentScrollY = window.scrollY;
+        
+        if (currentScrollY > lastScrollY && currentScrollY > 150) {
+            // 往下滾 → 隱藏導航欄
+            dayNav.classList.remove('show');
+            dayNav.classList.add('hide');
+        } else if (currentScrollY < lastScrollY) {
+            // 往上滾 → 顯示導航欄
+            dayNav.classList.remove('hide');
+            dayNav.classList.add('show');
+        }
+        
+        lastScrollY = currentScrollY;
+    });
+
+        // === 點擊日期導航欄 → 平滑滾動到頁面頂部 ===
+    document.querySelector('.day-nav').addEventListener('click', (e) => {
+        // 只在點擊到 .day-nav 本身的空白處才觸發（避免點按鈕時也跳頂）
+        if (e.target === document.querySelector('.day-nav') || 
+            e.target.closest('.nav-container')) {
+            
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+    });
     </script>
 </body>
 </html>
