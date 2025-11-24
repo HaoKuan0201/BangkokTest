@@ -360,7 +360,7 @@
                 const notesHTML = event.notes ? `
                     <div class="notes-container" id="notes-container-${dayIndex}-${eventIndex}">
                         <div class="event-notes collapsed" id="event-notes-${dayIndex}-${eventIndex}">
-                            ${highlightedNotes}
+                            ${formattedNotes}
                         </div>
                         <button class="toggle-notes-btn" onclick="toggleNotes(${dayIndex}, ${eventIndex}, this)">
                             展開備註 🔽
@@ -388,8 +388,8 @@
                             </span>
                         </div>
                     </div>
-
-                    <div class="event-notes">${formattedNotes}</div>
+                    
+${notesHTML}
                 `;
 
                 timeline.appendChild(card);
