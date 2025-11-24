@@ -26,12 +26,12 @@
 }
 
 body[data-theme="dark"] {
-    --primary-color: #d1dde6;  /* 主文字色（原 #2C3E50） */
-    --accent-color: #f2ca27;   /* 強調色（金黃） */
-    --bg-color: #1a2124;       /* 整體背景 */
-    --card-bg: #262a2b;        /* 卡片背景 */
-    --text-main: #c8c3bc;      /* 主要文字 */
-    --text-light: #9c9386;     /* 淡文字 */
+    --primary-color: #d1dde6;     /* 主文字色（原 #2C3E50） */
+    --accent-color: #f2ca27;      /* 強調色（金黃） */
+    --bg-color: #1a2124;          /* 整體背景 */
+    --card-bg: #262a2b;           /* 卡片背景 */
+    --text-main: #c8c3bc;         /* 主要文字 */
+    --text-light: #9c9386;        /* 淡文字 */
     --header-bg: #2C3E50;
 
     --trans-walk: #219251;
@@ -376,133 +376,88 @@ body {
     outline: none;
 }
 
-/* Notes (原始樣式 & 結構化樣式整合) */
+/* Notes (美化並適應收合功能) */
 .event-notes {
+    /* 保持原有的邊框 */
+    border-top: 1px solid #eee;
+    padding-top: 10px;
+    margin-top: 10px;
+    
     font-size: 0.95rem;
     color: var(--text-light);
-    margin-top: 10px;
-    padding-top: 10px;
-    border-top: 1px solid #eee;
     line-height: 1.5;
-
-    /* New: 結構化筆記容器樣式 */
-    padding: 15px; 
-    border-radius: 8px;
-    background-color: #f9f9f9; 
-    border: 1px solid #ddd;
 }
 
-/* Dark Mode adjustment for event-notes container */
+/* 深色模式下的邊框顏色 */
 body[data-theme="dark"] .event-notes {
-    border-top: 1px solid #333; 
-    background-color: #1f2324; 
-    border: 1px solid #333;
-    color: var(--text-light); /* 確保暗黑模式下文字仍是淺色 */
+    border-top: 1px solid #333;
 }
 
-/* New: 結構化筆記樣式 */
-.event-notes > ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+/* 結構化排版 (將每一行備註變成一個獨立的段落) */
+.event-notes p {
+    margin-bottom: 5px; /* 段落間距 */
+    padding-left: 15px; /* 縮排效果 */
+    position: relative;
 }
 
-/* 樓層區塊 (<li>) 的樣式 */
-.floor-section {
-    margin-bottom: 20px;
-    padding: 10px;
-    border-left: 5px solid var(--accent-color); 
-    background-color: var(--card-bg); 
-    border-radius: 4px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-}
-
-/* Dark Mode adjustment for floor section */
-body[data-theme="dark"] .floor-section {
-    background-color: #262a2b; 
-    border-left-color: var(--accent-color);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
-}
-
-/* 樓層標題 (<h3>) 的樣式 */
-.floor-title {
-    font-size: 1.1em;
+/* 使用一個小點作為列表符號 */
+.event-notes p::before {
+    content: '•'; /* 使用點或您喜歡的符號 */
+    position: absolute;
+    left: 0;
+    top: 0; /* 確保對齊段落頂部 */
+    color: var(--primary-color); /* 使用主色增加質感 */
     font-weight: bold;
-    color: var(--primary-color); 
-    margin-top: 0;
-    margin-bottom: 8px;
-    padding-bottom: 5px;
-    border-bottom: 1px dashed #ddd; 
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    font-size: 1.1em;
 }
 
-/* Dark Mode adjustment for floor title */
-body[data-theme="dark"] .floor-title {
-    color: var(--text-main); 
-    border-bottom: 1px dashed #444;
+/* 3. 收合/展開功能樣式 */
+.notes-collapsible {
+    /* 確保收合部分被隱藏 */
+    overflow: hidden;
 }
 
-/* 樓層內容列表 (<ul>) 的樣式 */
-.floor-content-list {
-    list-style-type: disc; 
-    padding-left: 20px;
-    margin: 0;
+.notes-hidden-part {
+    /* 預設隱藏，但不使用 display: none 確保動畫可行 */
+    max-height: 0;
+    opacity: 0;
+    transition: max-height 0.4s ease-out, opacity 0.4s ease-out;
 }
 
-.floor-content-list li {
-    padding: 3px 0;
-    color: var(--text-main); /* 確保列表文字是主要顏色 */
+.notes-hidden-part.expanded {
+    /* 展開時設置一個足夠大的高度 */
+    max-height: 500px; /* 假設 500px 足夠容納所有內容 */
+    opacity: 1;
+    transition: max-height 0.5s ease-in, opacity 0.5s ease-in;
+    padding-top: 10px; /* 展開內容和收合內容之間增加間距 */
 }
 
-/* 價格資訊高亮樣式 (.price-info) */
-.price-info {
-    font-weight: 700;
-    color: var(--danger); 
-    background-color: #ffe8e8; 
-    padding: 1px 4px;
-    border-radius: 3px;
-    white-space: nowrap;
-    font-size: 0.9em;
-}
-
-/* Dark Mode adjustment for price info */
-body[data-theme="dark"] .price-info {
-    color: #ffd700; 
-    background-color: #4a2d00; 
-}
-
-/* 雜項內容 */
-.misc-item {
-    padding: 5px 10px;
-    font-style: italic;
+.notes-toggle-btn {
+    display: block;
+    width: 100%;
+    text-align: center;
+    background: none;
+    border: none;
+    cursor: pointer;
     color: var(--text-light);
-    list-style-type: none;
-    border-left: 3px solid #ccc;
-    margin-bottom: 5px;
+    font-size: 0.8rem;
+    padding: 5px 0 0;
     margin-top: 5px;
+    transition: color 0.2s;
 }
 
-body[data-theme="dark"] .misc-item {
-    color: var(--text-light);
-    border-left: 3px solid #555;
+.notes-toggle-btn:hover {
+    color: var(--primary-color);
 }
 
 
-/* 舊的 highlight 樣式 (用於次要關鍵字高亮) */
+/* Highlight */
 .highlight {
     background-color: #fff9c4; /* 淺黃底 */
     color: #d35400;
     font-weight: 700;
     padding: 0 4px;
     border-radius: 3px;
-}
-
-/* Dark Mode adjustment for old highlight */
-body[data-theme="dark"] .highlight { 
-    background: #5D3A00; 
-    color: #FFD700; 
 }
 
 
@@ -763,85 +718,3 @@ body[data-theme="dark"] .highlight {
     opacity: 1;
     transform: translateY(0);
 }
-
-/* --- 備註收折功能樣式 (新增) --- */
-
-.notes-container {
-    margin-top: 10px;
-}
-
-.event-notes {
-    /* 確保原有的 event-notes 樣式保留 */
-    font-size: 0.95rem;
-    color: var(--text-light);
-    padding: 15px; 
-    border-radius: 8px;
-    background-color: #f9f9f9; 
-    border: 1px solid #ddd;
-    line-height: 1.5;
-    
-    /* === 核心收折樣式 === */
-    overflow: hidden; /* 隱藏超出部分 */
-    max-height: 1000px; /* 初始值，確保內容能完全顯示 */
-    transition: max-height 0.4s ease-out, background-color 0.2s; /* 平滑過渡 */
-    position: relative; /* 為了漸變覆蓋 */
-}
-
-/* 收折狀態 (預設顯示 100px) */
-.event-notes.collapsed {
-    max-height: 100px;
-}
-
-/* 備註底部的漸變遮罩，模擬內容被截斷 */
-.event-notes.collapsed::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 30px; /* 漸變區域高度 */
-    /* 從透明到背景色 */
-    background: linear-gradient(to top, var(--card-bg), rgba(255, 255, 255, 0));
-    pointer-events: none; /* 讓點擊穿透到內容 */
-}
-
-/* Dark Mode 調整漸變遮罩 */
-body[data-theme="dark"] .event-notes {
-    background-color: #1f2324; /* event-notes 的深色背景 */
-    border: 1px solid #333;
-}
-
-body[data-theme="dark"] .event-notes.collapsed::after {
-    background: linear-gradient(to top, #1f2324, rgba(31, 35, 36, 0));
-}
-
-/* 展開/收起按鈕 */
-.toggle-notes-btn {
-    display: block;
-    width: 100%;
-    text-align: center;
-    padding: 5px 10px;
-    margin-top: 5px;
-    background: transparent;
-    border: 1px solid #eee;
-    border-radius: 4px;
-    color: var(--primary-color);
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: background-color 0.2s, color 0.2s;
-}
-
-.toggle-notes-btn:hover {
-    background-color: #f0f0f0;
-}
-
-/* Dark Mode 調整按鈕 */
-body[data-theme="dark"] .toggle-notes-btn {
-    background: #333;
-    border-color: #444;
-    color: var(--text-main);
-}
-body[data-theme="dark"] .toggle-notes-btn:hover {
-    background: #444;
-}
-/* --- 備註收折功能樣式 (結束) --- */
