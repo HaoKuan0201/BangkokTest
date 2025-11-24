@@ -569,61 +569,53 @@ ${notesHTML}
         function formatNotes(text) {
     if (!text) return "";
 
-    // 1. 將輸入文本按行分割
-    const lines = text.trim().split('\n');
+    // 1. 將輸入文本按行分割並過濾空行
+    const lines = text.trim().split('\n').map(line => line.trim()).filter(line => line.length > 0);
 
     let html = '<ul>'; // 使用無序列表來包裹所有內容
-    
+
     lines.forEach(line => {
-        // 使用正則表達式來判斷是否為樓層標題 (例如: "G、UG樓 - ...", "2樓 - ...")
-        // 這個正則會匹配以 "X樓" 或 "X、Y樓" 開頭，後面接著 " - " 的行
-        const floorMatch = line.match(/^(\s*\w+[\s、\w]*[樓|層]\s*)\s*-\s*(.*)/i);
+        // 使用正則表達式，尋找第一個 `-` 符號 (前面可能有空格，後面必須緊接著內容)
+        const separatorIndex = line.indexOf('-');
         
-        if (floorMatch) {
-            // 匹配成功：這是一行樓層標題和內容
-            const floorTitle = floorMatch[1].trim(); // 例如: "G、UG樓"
-            const content = floorMatch[2].trim();   // 例如: "室內水上市場、 Lung Ngen Coffee..."
+        // 判斷是否有 `-` 且 `-` 後面有內容
+        if (separatorIndex !== -1 && separatorIndex < line.length - 1) {
+            // 匹配成功：這是一行 "Title - Content" 結構的內容
             
-            // 結束上一個列表項 (如果有的話)
-            if (html.endsWith('<li>')) {
-                html += '</ul>';
-            }
+            const title = line.substring(0, separatorIndex).trim();
+            const content = line.substring(separatorIndex + 1).trim();
             
-            // 開始新的列表項，並使用 <h3> 作為樓層標題，使其更突出
+            // 開始新的列表項，並使用 <strong> 作為標題
             html += `
-                <li class="floor-section">
-                    <h3 class="floor-title">📍 ${floorTitle}</h3>
-                    <ul class="floor-content-list">
+                <li class="section-item">
+                    <strong class="item-title">👉 ${title}</strong>
+                    <ul class="content-list">
             `;
             
-            // 將內容（例如: "室內水上市場、 Lung Ngen Coffee(泰奶60)..."）按頓號/逗號分割成子項目
-            // 使用正則表達式，分割符號為 '、' 或 ','，但不在括號內
+            // 將內容按頓號/逗號分割成子項目。
+            // 沿用您的正則，確保分隔符號不在括號內，以正確處理像 "Lung Ngen Coffee(泰奶60)" 這樣的內容。
             const contentItems = content.split(/、(?![^(]*\))|, (?![^(]*\))/).map(item => item.trim()).filter(item => item.length > 0);
             
             contentItems.forEach(item => {
-                // 將價格資訊 (例如: (泰奶60), 3個60) 用 <strong> 或其他方式高亮
-                const itemHtml = item.replace(/(\(\s*\S*?\s*\d+\s*[%)個]*\s*\))|(\d+\s*[%)個]*)/g, (match) => {
-                    // 避免過度高亮，只針對括號內的價格或單獨數字做高亮
-                    if (match.includes('(') || match.includes(')')) {
-                        return `<span class="price-info">${match}</span>`;
-                    }
-                    return match;
+                // 將價格資訊 (例如: (泰奶60), 3個60, 110 糖40%) 用 <span> 高亮
+                // 擴大高亮範圍，匹配所有括號內的內容或包含數字的短語
+                const itemHtml = item.replace(/(\([^)]+\))|(\b\d+[\s%個]*)/g, (match) => {
+                    return `<span class="price-info">${match}</span>`;
                 });
                 html += `<li>${itemHtml}</li>`;
             });
             
             html += `</ul></li>`;
             
-        } else if (line.trim().length > 0) {
-            // 匹配失敗：可能是一行獨立的內容（例如: 觀景台），將其視為單獨的列表項
-            html += `<li class="misc-item">${line.trim()}</li>`;
+        } else if (line.length > 0) {
+            // 匹配失敗：這是一行獨立的內容（沒有明顯的 title - content 結構）
+            // 例如: "抵達後先去換匯"、"有免費廁所"
+            html += `<li class="misc-item">⭐ ${line}</li>`;
         }
     });
 
     // 確保最後的 <ul> 標籤被關閉
-    if (!html.endsWith('</ul>')) {
-        html += '</ul>';
-    }
+    html += '</ul>';
 
     return html;
 }
