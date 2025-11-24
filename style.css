@@ -376,6 +376,10 @@ body {
     outline: none;
 }
 
+.notes-container {
+    margin-top: 10px;
+}
+
 /* Notes (原始樣式 & 結構化樣式整合) */
 .event-notes {
     font-size: 0.95rem;
@@ -385,11 +389,35 @@ body {
     border-top: 1px solid #eee;
     line-height: 1.5;
 
+    /* === 核心收折樣式 === */
+    overflow: hidden; /* 隱藏超出部分 */
+    max-height: 1000px; /* 初始值，確保內容能完全顯示 */
+    transition: max-height 0.4s ease-out, background-color 0.2s; /* 平滑過渡 */
+    position: relative; /* 為了漸變覆蓋 */
+    
     /* New: 結構化筆記容器樣式 */
     padding: 15px; 
     border-radius: 8px;
     background-color: #f9f9f9; 
     border: 1px solid #ddd;
+}
+
+/* 收折狀態 (預設顯示 100px) */
+.event-notes.collapsed {
+    max-height: 100px;
+}
+
+/* 備註底部的漸變遮罩，模擬內容被截斷 */
+.event-notes.collapsed::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 30px; /* 漸變區域高度 */
+    /* 從透明到背景色 */
+    background: linear-gradient(to top, var(--card-bg), rgba(255, 255, 255, 0));
+    pointer-events: none; /* 讓點擊穿透到內容 */
 }
 
 /* Dark Mode adjustment for event-notes container */
