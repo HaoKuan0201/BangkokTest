@@ -356,7 +356,18 @@
                     </a>
                 ` : '';
 
-
+                // 備註收折功能結構
+                const notesHTML = event.notes ? `
+                    <div class="notes-container" id="notes-container-${dayIndex}-${eventIndex}">
+                        <div class="event-notes collapsed" id="event-notes-${dayIndex}-${eventIndex}">
+                            ${highlightedNotes}
+                        </div>
+                        <button class="toggle-notes-btn" onclick="toggleNotes(${dayIndex}, ${eventIndex}, this)">
+                            展開備註 🔽
+                        </button>
+                    </div>
+                ` : '';
+                
                 card.innerHTML = `
                     <div class="event-header">
                         <span class="event-time">${event.time}</span>
@@ -749,6 +760,26 @@
             });
         }
     });
+
+        // --- 備註收折功能邏輯 (新增) ---
+        window.toggleNotes = function(dayIndex, eventIndex, button) {
+            const notesElement = document.getElementById(`event-notes-${dayIndex}-${eventIndex}`);
+            
+            if (notesElement.classList.contains('collapsed')) {
+                // 展開
+                notesElement.classList.remove('collapsed');
+                button.textContent = '收起備註 🔼';
+                // 調整高度以確保內容完全顯示
+                notesElement.style.maxHeight = notesElement.scrollHeight + "px";
+            } else {
+                // 收折
+                notesElement.classList.add('collapsed');
+                button.textContent = '展開備註 🔽';
+                // 使用 CSS 設定的收折高度
+                notesElement.style.maxHeight = '100px'; 
+            }
+        }
+        // --- 備註收折功能邏輯 (結束) ---
     </script>
 </body>
 </html>
