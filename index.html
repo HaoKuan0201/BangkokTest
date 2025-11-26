@@ -177,6 +177,8 @@
     let appData = {};
     let currentDayIndex = 0;
     let isEditMode = false;
+    // 修正 Bug 2: 限制滑動偵測範圍
+    let isSwiping = false; // 新增標誌，避免多重滑動觸發
     let mouseStartX = 0;
     let touchStartX = 0;
     let touchEndX = 0;
@@ -231,6 +233,7 @@
         document.addEventListener('click', (e) => {
             const menu = document.getElementById('more-menu-dropdown');
             const btn = document.getElementById('more-menu-btn');
+            // 修正 Bug 1 相關：確保點擊菜單內部按鈕後，菜單也能關閉 (openQRModal 會負責關閉)
             if (!menu.contains(e.target) && !btn.contains(e.target)) {
                 menu.classList.remove('show');
             }
@@ -292,13 +295,13 @@
         swipeContainer.addEventListener('touchstart', handleTouchStart, { passive: true });
         swipeContainer.addEventListener('touchend', handleTouchEnd, { passive: true });
 
-        swipeContainer.addEventListener('mousedown', (e) => mouseStartX = e.screenX);
+        // 修正 Bug 2: 將 mouse events 監聽限制在 #swipe-container 內
+        swipeContainer.addEventListener('mousedown', handleMouseStart);
         swipeContainer.addEventListener('mouseup', handleMouseSwipe);
 
-        document.body.addEventListener('mousedown', (e) => {
-            mouseStartX = e.screenX;
-        });
-        document.body.addEventListener('mouseup', handleMouseSwipe);
+        // 移除對 document.body 的 mouseup/mousedown 監聽
+        // document.body.addEventListener('mousedown', (e) => { mouseStartX = e.screenX; });
+        // document.body.addEventListener('mouseup', handleMouseSwipe);
     }
     
     function initScrollListener() {
@@ -634,23 +637,37 @@
     // --- 滑動邏輯 ---
     function handleTouchStart(e) {
         touchStartX = e.changedTouches[0].screenX;
+        isSwiping = true;
     }
 
     function handleTouchEnd(e) {
+        if (!isSwiping) return;
         touchEndX = e.changedTouches[0].screenX;
-        handleSwipe();
+        handleSwipe(touchStartX, touchEndX);
+        isSwiping = false;
+    }
+    
+    function handleMouseStart(e) {
+        // 確保只有滑鼠左鍵點擊才開始偵測
+        if (e.button !== 0) return; 
+        mouseStartX = e.screenX;
+        isSwiping = true;
     }
 
-    function handleSwipe() {
-        const swipeDistance = touchStartX - touchEndX;
+    function handleSwipe(startX, endX) {
+        const swipeDistance = startX - endX;
 
         if (Math.abs(swipeDistance) < minSwipeDistance) return;
 
-        if (swipeDistance > 0) {
+        // 避免重複執行
+        if (Date.now() - (window.lastSwipeTime || 0) < 300) return; 
+        window.lastSwipeTime = Date.now();
+
+        if (swipeDistance > 0) { // 左滑 (到下一天)
             if (currentDayIndex < appData.days.length - 1) {
                 currentDayIndex++;
             }
-        } else {
+        } else { // 右滑 (到前一天)
             if (currentDayIndex > 0) {
                 currentDayIndex--;
             }
@@ -666,12 +683,12 @@
     }
 
     function handleMouseSwipe(e) {
+        if (!isSwiping) return;
+        isSwiping = false;
+
         const diff = mouseStartX - e.screenX;
-        if (Math.abs(diff) > 80) {
-            if (diff > 0 && currentDayIndex < appData.days.length - 1) currentDayIndex++;
-            else if (diff < 0 && currentDayIndex > 0) currentDayIndex--;
-            updateNavState();
-            renderDay(currentDayIndex);
+        if (Math.abs(diff) > 80) { // 增加閾值，確保是故意的滑動
+            handleSwipe(mouseStartX, e.screenX);
         }
     }
 
@@ -879,6 +896,7 @@
     }
 
     window.openQRModal = function() {
+        // 修正 Bug 1: 點擊後確保菜單關閉
         document.getElementById('more-menu-dropdown').classList.remove('show');
         document.getElementById('qr-modal').classList.add('visible');
         
