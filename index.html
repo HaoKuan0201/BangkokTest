@@ -9,573 +9,895 @@
 </head>
 <body>
 
-<header class="app-header">
-    <div class="header-top">
-        <div class="header-titles">
-            <h1>曼谷五日自由行</h1>
-            <p class="subtitle">11/27 (四) - 12/1 (一)</p>
-        </div>
-        <div class="header-controls">
-            <div class="more-menu-container">
-                <button id="more-menu-btn" class="icon-btn" onclick="toggleMoreMenu()" title="更多功能">
+    <header class="app-header">
+        <div class="header-top">
+            <div class="header-titles">
+                <h1>曼谷五日自由行</h1>
+                <p class="subtitle">11/27 (四) - 12/1 (一)</p>
+            </div>
+            
+            <div class="header-controls">
+
+                <div class="more-menu-container">
+                    <button id="more-menu-btn" class="icon-btn" onclick="toggleMoreMenu()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="1"></circle>
+                            <circle cx="19" cy="12" r="1"></circle>
+                            <circle cx="5" cy="12" r="1"></circle>
+                        </svg>
+                    </button>
+
+                    <div id="more-menu-dropdown" class="more-menu-dropdown">
+                        
+                        <button class="icon-btn" onclick="openQRModal()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="14" width="7" height="7"></rect>
+                                <path d="M3 14h7v7H3z"></path>
+                            </svg>
+                            TDAC QR
+                        </button>
+
+                        <button id="reload-server-data-btn" class="icon-btn reload-server-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M23 4v6h-6"></path>
+                                <path d="M1 20v-6h6"></path>
+                                <path d="M20.49 9A9 9 0 0 0 5.51 9"></path>
+                                <path d="M3.51 15A9 9 0 0 0 18.49 15"></path>
+                            </svg>
+                            重置資料
+                        </button>
+                        
+                        <button id="theme-toggle-btn" class="icon-btn theme-toggle-btn">
+                            <svg id="theme-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                            </svg>
+                            切換主題
+                        </button>
+
+                        <button id="copy-data-btn" class="icon-btn copy-btn" onclick="copyAppDataToClipboard()">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect width="8" height="4" x="8" y="2" rx="1" ry="1"/>
+                                <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+                            </svg>
+                            複製數據
+                        </button>
+                    </div>
+                </div>
+                
+                <a href="https://www.google.com/maps/d/u/0/edit?mid=1pJlG73WanZkVkTSFvt3GLpMCDVU8heQ&ll=13.798196927110428%2C100.54907266665649&z=17" 
+                    target="_blank" 
+                    id="map-bookmark-btn" 
+                    class="icon-btn map-bookmark-btn">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="1"></circle>
-                        <circle cx="19" cy="12" r="1"></circle>
-                        <circle cx="5"  cy="12" r="1"></circle>
+                        <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/>
+                        <line x1="16" x2="16" y1="2" y2="22"/>
+                        <line x1="8" x2="8" y1="2" y2="18"/>
+                    </svg>
+                </a>
+                
+                <button id="edit-toggle-btn" class="icon-btn edit-toggle-btn" onclick="toggleEditMode()">
+                    <svg id="edit-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
                     </svg>
                 </button>
-                <div id="more-menu-dropdown" class="more-menu-dropdown">
-                    <button class="icon-btn" onclick="openQRModal()" title="TDAC QR Code">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="3" width="7" height="7"></rect>
-                            <rect x="14" y="3" width="7" height="7"></rect>
-                            <rect x="14" y="14" width="7" height="7"></rect>
-                            <path d="M3 14h7v7H3z"></path>
-                        </svg>
-                        TDAC QR
-                    </button>
-                    <button id="reload-server-data-btn" class="icon-btn reload-server-btn" title="讀取伺服器資料">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M23 4v6h-6"></path>
-                            <path d="M1 20v-6h6"></path>
-                            <path d="M20.49 9A9 9 0 0 0 5.51 9"></path>
-                            <path d="M3.51 15A9 9 0 0 0 18.49 15"></path>
-                        </svg>
-                        重置資料
-                    </button>
-                    <button id="theme-toggle-btn" class="icon-btn theme-toggle-btn" title="切換深色/淺色主題">
-                        <svg id="theme-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-                        </svg>
-                        切換主題
-                    </button>
-                    <button id="copy-data-btn" class="icon-btn copy-btn" onclick="copyAppDataToClipboard()" title="複製所有數據">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect width="8" height="4" x="8" y="2" rx="1" ry="1"/>
-                            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
-                        </svg>
-                        複製數據
-                    </button>
+            </div>
+        </div>
+    </header>
+    
+    <div id="toast-notification"></div>
+
+    <nav class="day-nav">
+        <div class="nav-container" id="nav-container">
+        </div>
+    </nav>
+
+    <div id="swipe-container">
+        <main id="schedule-container" class="schedule-container"></main>
+    </div>
+    
+    <div id="edit-modal" class="edit-modal">
+        <div class="modal-content">
+            <h3 id="modal-title">編輯行程</h3>
+            <form id="event-form">
+                <input type="hidden" id="event-day-index">
+                <input type="hidden" id="event-index">
+
+                <div class="form-group">
+                    <label for="event-time-input">時間 (格式: HH:MM 或 HH:MM-HH:MM)</label>
+                    <input type="text" id="event-time-input" required>
                 </div>
-            </div>
-            <a href="https://www.google.com/maps/d/u/0/edit?mid=1pJlG73WanZkVkTSFvt3GLpMCDVU8heQ&ll=13.798196927110428%2C100.54907266665649&z=17"
-               target="_blank" id="map-bookmark-btn" class="icon-btn map-bookmark-btn" title="查看行程地圖書籤">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/>
-                    <line x1="16" x2="16" y1="2" y2="22"/>
-                    <line x1="8"  x2="8"  y1="2" y2="18"/>
-                </svg>
-            </a>
-            <button id="edit-toggle-btn" class="icon-btn edit-toggle-btn" onclick="toggleEditMode()" title="切換編輯模式">
-                <svg id="edit-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>
-                </svg>
-            </button>
+
+                <div class="form-group">
+                    <label for="event-location-input">地點/活動</label>
+                    <input type="text" id="event-location-input" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="event-map-url-input">地圖連結 (可選)</label>
+                    <input type="url" id="event-map-url-input">
+                </div>
+
+                <div class="form-group">
+                    <label for="event-note-url-input">備註連結 (可選，例如預訂網址)</label>
+                    <input type="url" id="event-note-url-input">
+                </div>
+
+                <div class="form-group">
+                    <label for="event-transport-input">交通方式 (例如: 步行, BTS, Bolt)</label>
+                    <input type="text" id="event-transport-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="event-estimated-cost-input">預估花費 (泰銖)</label>
+                    <input type="number" id="event-estimated-cost-input" value="0" min="0">
+                </div>
+                
+                <div class="form-group">
+                    <label for="event-notes-input">備註 (可選)</label>
+                    <textarea id="event-notes-input" rows="3"></textarea>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="cancel-btn" onclick="closeEditModal()">取消</button>
+                    <button type="submit" class="save-btn">儲存</button>
+                </div>
+            </form>
         </div>
     </div>
-</header>
 
-<div id="toast-notification"></div>
+    <div id="qr-modal" class="edit-modal">
+        <div class="modal-content qr-modal-content">
+            <h3>TDAC QR Code</h3>
+            
+            <div class="qr-btn-group">
+                <button class="qr-person-btn active" onclick="switchQR('我', this)">我</button>
+                <button class="qr-person-btn" onclick="switchQR('媽', this)">媽</button>
+                <button class="qr-person-btn" onclick="switchQR('妹', this)">妹</button>
+            </div>
 
-<nav class="day-nav">
-    <div class="nav-container" id="nav-container"></div>
-</nav>
+            <div class="qr-image-container">
+                <img id="qr-image-display" src="tdac_我.png" alt="" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2NjYyIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxyZWN0IHg9IjMiIHk9IjMiIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgcng9IjIiIHJ5PSIyIi8+PHBhdGggZD0iTTEyIDh2OCIvPjxwYXRoIGQ9Ik04IDEybDggMCIvPjwvc3ZnPg=='">
+            </div>
 
-<div id="swipe-container">
-    <main id="schedule-container" class="schedule-container"></main>
-</div>
-
-<div id="edit-modal" class="edit-modal">
-    <div class="modal-content">
-        <h3 id="modal-title">編輯行程</h3>
-        <form id="event-form">
-            <input type="hidden" id="event-day-index">
-            <input type="hidden" id="event-index">
-            <div class="form-group">
-                <label for="event-time-input">時間 (格式: HH:MM 或 HH:MM-HH:MM)</label>
-                <input type="text" id="event-time-input" required>
+            <div class="button-group" style="justify-content: center;">
+                <button type="button" class="cancel-btn" onclick="closeQRModal()">關閉</button>
             </div>
-            <div class="form-group">
-                <label for="event-location-input">地點/活動</label>
-                <input type="text" id="event-location-input" required>
-            </div>
-            <div class="form-group">
-                <label for="event-map-url-input">地圖連結 (可選)</label>
-                <input type="url" id="event-map-url-input">
-            </div>
-            <div class="form-group">
-                <label for="event-note-url-input">備註連結 (可選)</label>
-                <input type="url" id="event-note-url-input">
-            </div>
-            <div class="form-group">
-                <label for="event-transport-input">交通方式</label>
-                <input type="text" id="event-transport-input" required>
-            </div>
-            <div class="form-group">
-                <label for="event-estimated-cost-input">預估花費 (泰銖)</label>
-                <input type="number" id="event-estimated-cost-input" value="0" min="0">
-            </div>
-            <div class="form-group">
-                <label for="event-notes-input">備註 (可選)</label>
-                <textarea id="event-notes-input" rows="3"></textarea>
-            </div>
-            <div class="button-group">
-                <button type="button" class="cancel-btn" onclick="closeEditModal()">取消</button>
-                <button type="submit" class="save-btn">儲存</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<div id="qr-modal" class="edit-modal">
-    <div class="modal-content qr-modal-content">
-        <h3>TDAC QR Code</h3>
-        <div class="qr-btn-group">
-            <button class="qr-person-btn active" onclick="switchQR('我', this)">我</button>
-            <button class="qr-person-btn" onclick="switchQR('媽', this)">媽</button>
-            <button class="qr-person-btn" onclick="switchQR('妹', this)">妹</button>
-        </div>
-        <div class="qr-image-container">
-            <img id="qr-image-display" src="tdac_我.png" alt="TDAC QR Code"
-                 onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2NjYyIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxyZWN0IHg9IjMiIHk9IjMiIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgcng9IjIiIHJ5PSIyIi8+PHBhdGggZD0iTTEyIDh2OCIvPjxwYXRoIGQ9Ik04IDEybDggMCIvPjwvc3ZnPg==';this.title='圖片未找到'">
-        </div>
-        <div class="button-group" style="justify-content: center;">
-            <button type="button" class="cancel-btn" onclick="closeQRModal()">關閉</button>
         </div>
     </div>
-</div>
 
 <script>
-const STORAGE_KEY = 'bangkokTripData';
-const CHECK_KEY_SUFFIX = '_done';
-const COST_KEY_SUFFIX = '_cost';
 
-let appData = {};
-let currentDayIndex = 0;
-let isEditMode = false;
-let touchStartX = 0;
-let mouseStartX = 0;
+    // --- 數據與狀態管理 ---
+    const STORAGE_KEY = 'bangkokTripData';
+    const CHECK_KEY_SUFFIX = '_done';
+    const COST_KEY_SUFFIX = '_cost';
 
-document.addEventListener('DOMContentLoaded', () => {
-    appData = loadData();
-    initApp();
-    document.getElementById('event-form').addEventListener('submit', handleSaveEvent);
-    document.addEventListener('click', e => {
-        const menu = document.getElementById('more-menu-dropdown');
-        const btn = document.getElementById('more-menu-btn');
-        if (!menu.contains(e.target) && !btn.contains(e.target)) menu.classList.remove('show');
-    });
-});
+    let appData = {};
+    let currentDayIndex = 0;
+    let isEditMode = false;
+    let mouseStartX = 0;
+    let touchStartX = 0;
+    let touchEndX = 0;
+    const minSwipeDistance = 50;
 
-function loadData() {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored) {
-        try {
-            const parsed = JSON.parse(stored);
-            if (parsed.days && parsed.days.length > 0) return parsed;
-        } catch (e) { console.error(e); }
+    function loadData() {
+        const storedData = localStorage.getItem(STORAGE_KEY);
+        if (storedData) {
+            try {
+                const parsedData = JSON.parse(storedData);
+                if (parsedData.days && parsedData.days.length > 0) {
+                    return parsedData;
+                }
+            } catch (e) {
+                console.error("Error parsing stored data, falling back to original data.", e);
+            }
+        }
+        return originalTripData;
     }
-    return originalTripData;
-}
 
-function saveData() {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
-}
-
-function showToast(message) {
-    const toast = document.getElementById('toast-notification');
-    toast.textContent = message;
-    toast.classList.add('visible');
-    clearTimeout(window.toastTimeout);
-    window.toastTimeout = setTimeout(() => toast.classList.remove('visible'), 3000);
-}
-
-function copyAppDataToClipboard() {
-    const textarea = document.createElement('textarea');
-    textarea.value = 'const originalTripData = ' + JSON.stringify(appData, null, 4) + ';';
-    textarea.style.position = 'fixed';
-    textarea.style.left = '-9999px';
-    document.body.appendChild(textarea);
-    textarea.select();
-    try {
-        document.execCommand('copy');
-        showToast('數據已成功複製到剪貼簿！');
-    } catch (err) {
-        showToast('複製失敗，請手動複製。');
+    function saveData() {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
     }
-    document.body.removeChild(textarea);
-    document.getElementById('more-menu-dropdown').classList.remove('show');
-}
 
-function initApp() {
-    determineInitialDay();
-    renderNavigation();
-    renderDay(currentDayIndex);
-    updateEditButtonUI();
-    setupTheme();
-    setupSwipe();
-    setupNavHide();
-}
+    function getSortableTime(timeStr) {
+        if (!timeStr || typeof timeStr !== 'string') return '99:99'; 
+        const parts = timeStr.split('-');
+        return parts[0].trim();
+    }
 
-function determineInitialDay() {
-    const today = new Date();
-    const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
-    const idx = appData.days.findIndex(d => d.fullDate === todayStr);
-    currentDayIndex = idx !== -1 ? idx : 0;
-}
+    function sortEventsByTime(events) {
+        events.sort((a, b) => {
+            const timeA = getSortableTime(a.time);
+            const timeB = getSortableTime(b.time);
 
-function renderNavigation() {
-    const container = document.getElementById('nav-container');
-    container.innerHTML = '';
-    const weekdays = ['日','一','二','三','四','五','六'];
-    appData.days.forEach((day, i) => {
-        const date = new Date(day.fullDate);
-        const btn = document.createElement('button');
-        btn.className = `nav-btn ${i === currentDayIndex ? 'active' : ''}`;
-        btn.textContent = `${day.day} (${date.getMonth()+1}/${date.getDate()} ${weekdays[date.getDay()]})`;
-        btn.onclick = () => {
-            currentDayIndex = i;
-            updateNavState();
-            renderDay(i);
-        };
-        container.appendChild(btn);
+            if (timeA < timeB) {
+                return -1;
+            }
+            if (timeA > timeB) {
+                return 1;
+            }
+            return 0;
+        });
+    }
+
+    // --- 初始化與事件監聽 ---
+    document.addEventListener('DOMContentLoaded', () => {
+        appData = loadData();
+        initApp();
+        document.getElementById('event-form').addEventListener('submit', handleSaveEvent);
+        
+        document.addEventListener('click', (e) => {
+            const menu = document.getElementById('more-menu-dropdown');
+            const btn = document.getElementById('more-menu-btn');
+            if (!menu.contains(e.target) && !btn.contains(e.target)) {
+                menu.classList.remove('show');
+            }
+        });
+
+        const themeToggleBtn = document.getElementById('theme-toggle-btn');
+        if(themeToggleBtn) {
+            themeToggleBtn.addEventListener('click', () => {
+                const current = document.body.getAttribute('data-theme');
+                const newTheme = current === 'dark' ? 'light' : 'dark';
+                
+                document.body.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+                
+                document.getElementById('more-menu-dropdown').classList.remove('show');
+            });
+        }
+        
+        const reloadBtn = document.getElementById('reload-server-data-btn');
+        if(reloadBtn) {
+            reloadBtn.addEventListener('click', handleReloadServerData);
+        }
+
+        const dayNav = document.querySelector('.day-nav');
+        if(dayNav) {
+            dayNav.addEventListener('click', (e) => {
+                if (e.target === dayNav || e.target.closest('.nav-container')) {
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        }
+        
+        initSwipeListeners();
+        initScrollListener();
+        initTheme();
     });
-    setTimeout(updateNavState, 100);
-}
 
-function updateNavState() {
-    document.querySelectorAll('.nav-btn').forEach((b, i) => {
-        b.classList.toggle('active', i === currentDayIndex);
-        if (i === currentDayIndex) b.scrollIntoView({ behavior:'smooth', block:'nearest', inline:'center' });
-    });
-}
-
-function setupSwipe() {
-    const container = document.getElementById('swipe-container');
-    container.addEventListener('touchstart', e => touchStartX = e.changedTouches[0].screenX, {passive:true});
-    container.addEventListener('touchend', () => {
-        const diff = touchStartX - (event.changedTouches[0].screenX);
-        if (Math.abs(diff) < 50) return;
-        if (diff > 0 && currentDayIndex < appData.days.length-1) currentDayIndex++;
-        else if (diff < 0 && currentDayIndex > 0) currentDayIndex--;
-        updateNavState();
+    function initApp() {
+        determineInitialDay();
+        renderNavigation();
         renderDay(currentDayIndex);
-        window.scrollTo({top:0, behavior:'smooth'});
-    });
-    container.addEventListener('mousedown', e => mouseStartX = e.screenX);
-    container.addEventListener('mouseup', e => {
-        const diff = mouseStartX - e.screenX;
-        if (Math.abs(diff) <= 80) return;
-        if (diff > 0 && currentDayIndex < appData.days.length-1) currentDayIndex++;
-        else if (diff < 0 && currentDayIndex > 0) currentDayIndex--;
-        updateNavState();
-        renderDay(currentDayIndex);
-    });
-}
-
-function renderDay(dayIdx) {
-    const container = document.getElementById('schedule-container');
-    const day = appData.days[dayIdx];
-    container.innerHTML = '';
-    
-    container.innerHTML += `<div style="text-align:center"><h2 class="day-theme">${day.theme}</h2></div>`;
-    
-    const timeline = document.createElement('div');
-    timeline.className = 'timeline';
-    let dailyTotal = 0;
-    
-    day.events.forEach((ev, i) => {
-        const prefix = `trip_d${dayIdx}_e${i}`;
-        const completed = localStorage.getItem(prefix + CHECK_KEY_SUFFIX) === 'true';
-        const storedCost = localStorage.getItem(prefix + COST_KEY_SUFFIX);
-        if (storedCost && !isNaN(parseInt(storedCost))) dailyTotal += parseInt(storedCost);
-        
-        const transport = (ev.transport || '').toLowerCase();
-        let icon = '步行'; let cls = 'trans-walk';
-        if (transport.includes('bts') || transport.includes('mrt')) { icon='火車'; cls='trans-bts'; }
-        else if (transport.includes('船') || transport.includes('渡輪') || transport.includes('ferry')) { icon='船'; cls='trans-boat'; }
-        else if (transport.includes('bolt') || transport.includes('包車') || transport.includes('公車') || transport.includes('car')) { icon='汽車'; cls='trans-car'; }
-        else if (transport.includes('飛機')) { icon='飛機'; cls='trans-bts'; }
-        
-        const mapHTML = ev.mapURL ? `<a href="${ev.mapURL}" target="_blank" class="map-icon" title="查看地圖"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></a>` : '';
-        const noteHTML = ev.noteURL ? `<a href="${ev.noteURL}" target="_blank" class="note-icon" title="查看備註連結">火箭</a>` : '';
-        const notesHTML = ev.notes ? `
-            <div class="notes-container" id="notes-container-${dayIdx}-${i}">
-                <div class="event-notes collapsed" id="event-notes-${dayIdx}-${i}">${formatNotes(ev.notes)}</div>
-                <button class="toggle-notes-btn" onclick="toggleNotes(${dayIdx},${i},this)">展開備註 向下箭頭</button>
-            </div>` : '';
-        
-        const editControls = isEditMode ? `
-            <div class="edit-controls">
-                <button onclick="startEditEvent(${dayIdx},${i})" class="edit-icon" title="編輯">筆</button>
-                <button onclick="deleteEvent(${dayIdx},${i})" class="delete-icon" title="刪除">垃圾桶</button>
-            </div>` : '';
-        
-        const card = document.createElement('div');
-        card.className = `event-card ${completed ? 'completed' : ''}`;
-        card.id = `card-${dayIdx}-${i}`;
-        card.innerHTML = `
-            <div class="event-header">
-                <span class="event-time">${ev.time}</span>
-                ${editControls}
-            </div>
-            <div class="event-location-group">
-                <div class="event-location">${ev.location}</div>
-                ${mapHTML}${noteHTML}
-            </div>
-            <div class="event-details">
-                <span class="badge ${cls}">${icon} ${ev.transport}</span>
-                <div class="cost-section" onclick="enableCostEdit(${dayIdx},${i},this)">
-                    <span id="cost-display-${dayIdx}-${i}">
-                        ${storedCost ? `實支: ฿${storedCost}` : `預估: ฿${ev.cost}`}
-                    </span>
-                </div>
-            </div>
-            ${notesHTML}
-        `;
-        timeline.appendChild(card);
-    });
-    
-    container.appendChild(timeline);
-    
-    if (isEditMode) {
-        const addBtn = document.createElement('button');
-        addBtn.className = 'add-event-btn';
-        addBtn.textContent = '+ 新增行程';
-        addBtn.onclick = () => startAddEvent(dayIdx);
-        container.appendChild(addBtn);
+        updateEditButtonUI();
     }
     
-    const summary = document.createElement('div');
-    summary.className = 'daily-summary';
-    summary.innerHTML = `
-        <div class="total-label">本日實際總花費</div>
-        <div class="total-amount">฿${dailyTotal}</div>
-        <button class="reset-btn" onclick="resetDailyCosts(${dayIdx})">重置本日花費</button>
-    `;
-    container.appendChild(summary);
-}
-
-function getSortableTime(t) {
-    if (!t) return '99:99';
-    return t.split('-')[0].trim();
-}
-
-function sortEventsByTime(events) {
-    events.sort((a,b) => getSortableTime(a.time).localeCompare(getSortableTime(b.time)));
-}
-
-function toggleEditMode() {
-    isEditMode = !isEditMode;
-    updateEditButtonUI();
-    renderDay(currentDayIndex);
-}
-
-function updateEditButtonUI() {
-    const btn = document.getElementById('edit-toggle-btn');
-    const icon = document.getElementById('edit-icon');
-    if (isEditMode) {
-        btn.classList.add('active');
-        btn.title = '結束編輯模式';
-        icon.innerHTML = `<path d="M5 12l5 5l8-8"/>`;
-    } else {
-        btn.classList.remove('active');
-        btn.title = '切換編輯模式';
-        icon.innerHTML = `<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>`;
+    function initTheme() {
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.body.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
     }
-}
 
-function openEditModal(dayIdx, evIdx, isNew = false) {
-    const modal = document.getElementById('edit-modal');
-    const form = document.getElementById('event-form');
-    const title = document.getElementById('modal-title');
-    form.reset();
-    document.getElementById('event-day-index').value = dayIdx;
-    document.getElementById('event-index').value = isNew ? -1 : evIdx;
-    title.textContent = isNew ? '新增行程' : '編輯行程';
-    
-    if (!isNew) {
-        const ev = appData.days[dayIdx].events[evIdx];
-        document.getElementById('event-time-input').value = ev.time;
-        document.getElementById('event-location-input').value = ev.location;
-        document.getElementById('event-map-url-input').value = ev.mapURL || '';
-        document.getElementById('event-note-url-input').value = ev.noteURL || '';
-        document.getElementById('event-transport-input').value = ev.transport;
-        document.getElementById('event-estimated-cost-input').value = ev.cost;
-        document.getElementById('event-notes-input').value = ev.notes || '';
-    } else {
-        document.getElementById('event-estimated-cost-input').value = '0';
+    function initSwipeListeners() {
+        const swipeContainer = document.getElementById('swipe-container');
+        if (!swipeContainer) return;
+        
+        swipeContainer.addEventListener('touchstart', handleTouchStart, { passive: true });
+        swipeContainer.addEventListener('touchend', handleTouchEnd, { passive: true });
+
+        swipeContainer.addEventListener('mousedown', (e) => mouseStartX = e.screenX);
+        swipeContainer.addEventListener('mouseup', handleMouseSwipe);
+
+        document.body.addEventListener('mousedown', (e) => {
+            mouseStartX = e.screenX;
+        });
+        document.body.addEventListener('mouseup', handleMouseSwipe);
     }
-    modal.classList.add('visible');
-}
-
-function closeEditModal() {
-    document.getElementById('edit-modal').classList.remove('visible');
-}
-
-function startEditEvent(d, i) { openEditModal(d, i, false); }
-function startAddEvent(d) { openEditModal(d, null, true); }
-
-function handleSaveEvent(e) {
-    e.preventDefault();
-    const dayIdx = parseInt(document.getElementById('event-day-index').value);
-    const evIdx = parseInt(document.getElementById('event-index').value);
-    const newEv = {
-        time: document.getElementById('event-time-input').value,
-        location: document.getElementById('event-location-input').value,
-        mapURL: document.getElementById('event-map-url-input').value.trim() || null,
-        noteURL: document.getElementById('event-note-url-input').value.trim() || null,
-        transport: document.getElementById('event-transport-input').value,
-        cost: document.getElementById('event-estimated-cost-input').value || '0',
-        notes: document.getElementById('event-notes-input').value
-    };
-    if (evIdx === -1) appData.days[dayIdx].events.push(newEv);
-    else appData.days[dayIdx].events[evIdx] = newEv;
     
-    sortEventsByTime(appData.days[dayIdx].events);
-    saveData();
-    closeEditModal();
-    renderDay(dayIdx);
-}
+    function initScrollListener() {
+        let lastScrollY = window.scrollY;
+        const dayNav = document.querySelector('.day-nav');
 
-function deleteEvent(dayIdx, evIdx) {
-    if (!confirm('確定要刪除此行程嗎？')) return;
-    appData.days[dayIdx].events.splice(evIdx, 1);
-    localStorage.removeItem(`trip_d${dayIdx}_e${evIdx}${CHECK_KEY_SUFFIX}`);
-    localStorage.removeItem(`trip_d${dayIdx}_e${evIdx}${COST_KEY_SUFFIX}`);
-    sortEventsByTime(appData.days[dayIdx].events);
-    saveData();
-    renderDay(dayIdx);
-}
+        window.addEventListener('scroll', () => {
+            const currentScrollY = window.scrollY;
+            
+            if (currentScrollY > lastScrollY && currentScrollY > 150) {
+                dayNav.classList.remove('show');
+                dayNav.classList.add('hide');
+            } else if (currentScrollY < lastScrollY) {
+                dayNav.classList.remove('hide');
+                dayNav.classList.add('show');
+            }
+            
+            lastScrollY = currentScrollY;
+        });
+    }
 
-function formatNotes(text) {
-    if (!text) return '';
-    const lines = text.trim().split('\n').map(l => l.trim()).filter(l => l);
-    let html = '<ul>';
-    const highlight = t => t
-        .replace(/(\([^)]+\))/g, '<span class="highlight-parentheses">$1</span>')
-        .replace(/(\b\d+[\s%個]*)/g, '<span class="price-info">$1</span>');
-    
-    lines.forEach(line => {
-        const sep = line.indexOf('-');
-        if (sep !== -1 && (sep > 0 || sep < line.length-1)) {
-            const title = highlight(line.substring(0, sep).trim());
-            const items = line.substring(sep+1).trim().split(/\s*(?:、|,)\s*(?![^(]*\))/).map(i => i.trim()).filter(i => i);
-            html += `<li class="floor-section"><h3 class="floor-title">✨ ${title}</h3><ul class="floor-content-list">`;
-            items.forEach(i => html += `<li>${highlight(i)}</li>`);
-            html += `</ul></li>`;
+    // --- UI/渲染邏輯 ---
+    function showToast(message) {
+        const toast = document.getElementById('toast-notification');
+        toast.textContent = message;
+        toast.classList.add('visible');
+        
+        clearTimeout(window.toastTimeout);
+        window.toastTimeout = setTimeout(() => {
+            toast.classList.remove('visible');
+        }, 3000);
+    }
+
+    function determineInitialDay() {
+        const today = new Date();
+        const year = today.getFullYear();
+        const month = String(today.getMonth() + 1).padStart(2, '0');
+        const day = String(today.getDate()).padStart(2, '0');
+        const todayStr = `${year}-${month}-${day}`;
+
+        const foundIndex = appData.days.findIndex(d => d.fullDate === todayStr);
+        
+        if (foundIndex !== -1) {
+            currentDayIndex = foundIndex;
         } else {
-            html += `<li class="floor-section"><h3>✨${highlight(line)}</h3></li>`;
+            currentDayIndex = 0;
         }
-    });
-    html += '</ul>';
-    return html;
-}
-
-function toggleNotes(d, i, btn) {
-    const el = document.getElementById(`event-notes-${d}-${i}`);
-    if (el.classList.contains('collapsed')) {
-        el.classList.remove('collapsed');
-        btn.textContent = '收起備註 向上箭頭';
-        el.style.maxHeight = el.scrollHeight + 'px';
-    } else {
-        el.classList.add('collapsed');
-        btn.textContent = '展開備註 向下箭頭';
-        el.style.maxHeight = '100px';
     }
-}
 
-function enableCostEdit(d, i, el) {
-    if (isEditMode || el.querySelector('input')) return;
-    const saved = localStorage.getItem(`trip_d${d}_e${i}${COST_KEY_SUFFIX}`) || '';
-    el.innerHTML = `<input type="number" class="cost-input" value="${saved}" placeholder="金額" onblur="saveCost(${d},${i},this)" onkeydown="if(event.key==='Enter')this.blur()">`;
-    el.querySelector('input').focus();
-}
+    function renderNavigation() {
+        const navContainer = document.getElementById('nav-container');
+        navContainer.innerHTML = '';
 
-function saveCost(d, i, input) {
-    const val = input.value.trim();
-    const key = `trip_d${d}_e${i}${COST_KEY_SUFFIX}`;
-    if (val !== '' && parseInt(val) >= 0) localStorage.setItem(key, val);
-    else localStorage.removeItem(key);
-    renderDay(d);
-}
+        const weekdays = ['日', '一', '二', '三', '四', '五', '六'];
 
-function resetDailyCosts(d) {
-    if (!confirm('確定要重置今天的記帳數據嗎？')) return;
-    appData.days[d].events.forEach((_, i) => {
-        localStorage.removeItem(`trip_d${d}_e${i}${COST_KEY_SUFFIX}`);
-    });
-    renderDay(d);
-}
+        appData.days.forEach((dayData, index) => {
+            const btn = document.createElement('button');
+            btn.className = `nav-btn ${index === currentDayIndex ? 'active' : ''}`;
 
-function toggleMoreMenu() {
-    document.getElementById('more-menu-dropdown').classList.toggle('show');
-}
+            const dateObj = new Date(dayData.fullDate);
+            const month = dateObj.getMonth() + 1;
+            const date = dateObj.getDate();
+            const weekday = weekdays[dateObj.getDay()];
 
-function openQRModal() {
-    document.getElementById('more-menu-dropdown').classList.remove('show');
-    document.getElementById('qr-modal').classList.add('visible');
-    document.querySelector('.qr-person-btn').click();
-}
+            btn.textContent = `${dayData.day} (${month}/${date} ${weekday})`;
+            
+            btn.onclick = () => {
+                currentDayIndex = index;
+                updateNavState();
+                renderDay(index);
+            };
+            navContainer.appendChild(btn);
+        });
+        
+        setTimeout(updateNavState, 100);
+    }
 
-function closeQRModal() {
-    document.getElementById('qr-modal').classList.remove('visible');
-}
+    function updateNavState() {
+        const btns = document.querySelectorAll('.nav-btn');
+        btns.forEach((btn, index) => {
+            if (index === currentDayIndex) {
+                btn.classList.add('active');
+                btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+    }
+    
+    function renderDay(dayIndex) {
+        const container = document.getElementById('schedule-container');
+        const dayData = appData.days[dayIndex];
+        
+        container.innerHTML = '';
 
-function switchQR(person, btn) {
-    document.querySelectorAll('.qr-person-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById('qr-image-display').src = `tdac_${person}.png`;
-}
+        const themeHeader = document.createElement('div');
+        themeHeader.style.textAlign = 'center';
+        themeHeader.innerHTML = `<h2 class="day-theme">${dayData.theme}</h2>`;
+        container.appendChild(themeHeader);
 
-function setupTheme() {
-    const saved = localStorage.getItem('theme') || 'dark';
-    document.body.setAttribute('data-theme', saved);
-    updateThemeIcon(saved);
-    document.getElementById('theme-toggle-btn').addEventListener('click', () => {
-        const newTheme = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-        document.body.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        updateThemeIcon(newTheme);
+        const timeline = document.createElement('div');
+        timeline.className = 'timeline';
+
+        let dailyTotal = 0;
+
+        dayData.events.forEach((event, eventIndex) => {
+            const storageKeyPrefix = `trip_d${dayIndex}_e${eventIndex}`;
+            const isCompleted = localStorage.getItem(`${storageKeyPrefix}${CHECK_KEY_SUFFIX}`) === 'true';
+            const storedCost = localStorage.getItem(`${storageKeyPrefix}${COST_KEY_SUFFIX}`);
+            
+            const displayCost = storedCost !== null ? storedCost : '';
+            if (storedCost && !isNaN(parseInt(storedCost))) dailyTotal += parseInt(storedCost);
+
+            const card = document.createElement('div');
+            card.className = `event-card ${isCompleted ? 'completed' : ''}`;
+            card.id = `card-${dayIndex}-${eventIndex}`;
+
+            let transportIcon = '🚶';
+            let transportClass = 'trans-walk';
+            const t = event.transport ? event.transport.toLowerCase() : '';
+            
+            if (t.includes('bts') || t.includes('mrt')) {
+                transportIcon = '🚆';
+                transportClass = 'trans-bts';
+            } else if (t.includes('船') || t.includes('渡輪') || t.includes('ferry')) {
+                transportIcon = '⛴️';
+                transportClass = 'trans-boat';
+            } else if (t.includes('bolt') || t.includes('包車') || t.includes('公車') || t.includes('car')) {
+                transportIcon = '🚗';
+                transportClass = 'trans-car';
+            }
+            else if (t.includes('飛機')) {
+                transportIcon = '✈️';
+                transportClass = 'trans-bts';
+            }
+
+            const formattedNotes = formatNotes(event.notes);
+            
+            let headerContent = '';
+            if (isEditMode) {
+                headerContent = `
+                    <div class="edit-controls">
+                        <button onclick="startEditEvent(${dayIndex}, ${eventIndex})" class="edit-icon">
+                            ✏️
+                        </button>
+                        <button onclick="deleteEvent(${dayIndex}, ${eventIndex})" class="delete-icon">
+                            🗑️
+                        </button>
+                    </div>
+                `;
+            } 
+
+            const mapIconHTML = event.mapURL ? `
+                <a href="${event.mapURL}" target="_blank" class="map-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                    </svg>
+                </a>
+            ` : '';
+
+            const noteIconHTML = event.noteURL ? `
+                <a href="${event.noteURL}" target="_blank" class="note-icon">
+                    🚀
+                </a>
+            ` : '';
+
+            const notesHTML = event.notes ? `
+                <div class="notes-container" id="notes-container-${dayIndex}-${eventIndex}">
+                    <div class="event-notes collapsed" id="event-notes-${dayIndex}-${eventIndex}">
+                        ${formattedNotes}
+                    </div>
+                    <button class="toggle-notes-btn" onclick="toggleNotes(${dayIndex}, ${eventIndex}, this)">
+                        展開備註 🔽
+                    </button>
+                </div>
+            ` : '';
+            
+            card.innerHTML = `
+                <div class="event-header">
+                    <span class="event-time">${event.time}</span>
+                    ${headerContent}
+                </div>
+                
+                <div class="event-location-group">
+                    <div class="event-location">${event.location}</div>
+                    ${mapIconHTML}
+                    ${noteIconHTML}
+                </div>
+                
+                <div class="event-details">
+                    <span class="badge ${transportClass}">${transportIcon} ${event.transport}</span>
+                    <div class="cost-section" onclick="enableCostEdit(${dayIndex}, ${eventIndex}, this)">
+                        <span id="cost-display-${dayIndex}-${eventIndex}">
+                            ${storedCost ? `實支: ฿${storedCost}` : `預估: ฿${event.cost}`}
+                        </span>
+                    </div>
+                </div>
+                
+                ${notesHTML}
+            `;
+
+            timeline.appendChild(card);
+        });
+
+        container.appendChild(timeline);
+        
+        if (isEditMode) {
+            const addBtn = document.createElement('button');
+            addBtn.className = 'add-event-btn';
+            addBtn.textContent = '+ 新增行程';
+            addBtn.onclick = () => startAddEvent(dayIndex);
+            container.appendChild(addBtn);
+        }
+
+        const summary = document.createElement('div');
+        summary.className = 'daily-summary';
+        summary.innerHTML = `
+            <div class="total-label">本日實際總花費</div>
+            <div class="total-amount">฿${dailyTotal}</div>
+            <button class="reset-btn" onclick="resetDailyCosts(${dayIndex})">重置本日花費</button>
+        `;
+        container.appendChild(summary);
+    }
+    
+    function updateEditButtonUI() {
+        const btn = document.getElementById('edit-toggle-btn');
+        const iconElement = document.getElementById('edit-icon');
+
+        if (isEditMode) {
+            btn.classList.add('active');
+            btn.title = '結束編輯模式';
+            iconElement.innerHTML = `<path d="M5 12l5 5l8-8"/>`;
+        } else {
+            btn.classList.remove('active');
+            btn.title = '切換編輯模式';
+            iconElement.innerHTML = `<path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/>`;
+        }
+    }
+    
+    function updateThemeIcon(theme) {
+        const themeIcon = document.getElementById('theme-icon');
+        if (theme === 'dark') {
+            themeIcon.innerHTML = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>`;
+        } else {
+            themeIcon.innerHTML = `
+                <circle cx="12" cy="12" r="5"/>
+                <line x1="12" y1="1" x2="12" y2="3"/>
+                <line x1="12" y1="21" x2="12" y2="23"/>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                <line x1="1" y1="12" x2="3" y2="12"/>
+                <line x1="21" y1="12" x2="23" y2="12"/>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+            `;
+        }
+    }
+
+    // --- 編輯與操作邏輯 ---
+    
+    window.toggleEditMode = function() {
+        isEditMode = !isEditMode;
+        updateEditButtonUI();
+        renderDay(currentDayIndex);
+    }
+
+    function handleSaveEvent(e) {
+        e.preventDefault();
+        
+        const dayIndex = parseInt(document.getElementById('event-day-index').value);
+        const eventIndex = parseInt(document.getElementById('event-index').value);
+
+        const newEvent = {
+            time: document.getElementById('event-time-input').value,
+            location: document.getElementById('event-location-input').value,
+            mapURL: document.getElementById('event-map-url-input').value.trim(),
+            noteURL: document.getElementById('event-note-url-input').value.trim(),
+            transport: document.getElementById('event-transport-input').value,
+            cost: document.getElementById('event-estimated-cost-input').value || '0',
+            notes: document.getElementById('event-notes-input').value
+        };
+
+        if (eventIndex === -1) {
+            appData.days[dayIndex].events.push(newEvent);
+        } else {
+            appData.days[dayIndex].events[eventIndex] = newEvent;
+        }
+
+        sortEventsByTime(appData.days[dayIndex].events);
+
+        saveData();
+        closeEditModal();
+        renderDay(dayIndex);
+    }
+
+    window.deleteEvent = function(dayIndex, eventIndex) {
+        if(!confirm("確定要刪除此行程嗎？")) return;
+
+        appData.days[dayIndex].events.splice(eventIndex, 1);
+        saveData();
+        
+        localStorage.removeItem(`trip_d${dayIndex}_e${eventIndex}${CHECK_KEY_SUFFIX}`);
+        localStorage.removeItem(`trip_d${dayIndex}_e${eventIndex}${COST_KEY_SUFFIX}`);
+        
+        sortEventsByTime(appData.days[dayIndex].events);
+        renderDay(dayIndex);
+    }
+    
+    window.handleReloadServerData = function() {
+        const userConfirmed = confirm(
+            "⚠️ 這會把你目前在 localStorage 裡的所有自訂行程、記帳、完成狀態全部覆蓋，恢復成最一開始的原始行程！\n\n確定要繼續嗎？"
+        );
+
+        if (!userConfirmed) return;
+
+        appData = JSON.parse(JSON.stringify(originalTripData));
+
+        localStorage.removeItem(STORAGE_KEY);
+
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && (key.startsWith('trip_') || key.startsWith('bangkokTripData'))) {
+                localStorage.removeItem(key);
+            }
+        }
+
+        saveData();
+
+        showToast('✅ 已成功從伺服器重新載入原始行程！');
+        setTimeout(() => location.reload(), 1200);
+    }
+
+    // --- 滑動邏輯 ---
+    function handleTouchStart(e) {
+        touchStartX = e.changedTouches[0].screenX;
+    }
+
+    function handleTouchEnd(e) {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    }
+
+    function handleSwipe() {
+        const swipeDistance = touchStartX - touchEndX;
+
+        if (Math.abs(swipeDistance) < minSwipeDistance) return;
+
+        if (swipeDistance > 0) {
+            if (currentDayIndex < appData.days.length - 1) {
+                currentDayIndex++;
+            }
+        } else {
+            if (currentDayIndex > 0) {
+                currentDayIndex--;
+            }
+        }
+
+        updateNavState();
+        renderDay(currentDayIndex);
+
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    }
+
+    function handleMouseSwipe(e) {
+        const diff = mouseStartX - e.screenX;
+        if (Math.abs(diff) > 80) {
+            if (diff > 0 && currentDayIndex < appData.days.length - 1) currentDayIndex++;
+            else if (diff < 0 && currentDayIndex > 0) currentDayIndex--;
+            updateNavState();
+            renderDay(currentDayIndex);
+        }
+    }
+
+    // --- 記帳與備註邏輯 ---
+    window.toggleNotes = function(dayIndex, eventIndex, button) {
+        const notesElement = document.getElementById(`event-notes-${dayIndex}-${eventIndex}`);
+        
+        if (notesElement.classList.contains('collapsed')) {
+            notesElement.classList.remove('collapsed');
+            button.textContent = '收起備註 🔼';
+            notesElement.style.maxHeight = notesElement.scrollHeight + "px";
+        } else {
+            notesElement.classList.add('collapsed');
+            button.textContent = '展開備註 🔽';
+            notesElement.style.maxHeight = '100px'; 
+        }
+    }
+
+    function formatNotes(text) {
+        if (!text) return "";
+
+        const lines = text.trim().split('\n').map(line => line.trim()).filter(line => line.length > 0);
+
+        let html = '<ul>';
+
+        const applyHighlighting = (item) => {
+            let itemHtml = item;
+
+            itemHtml = itemHtml.replace(/(\([^)]+\))/g, (match) => {
+                return `<span class="highlight-parentheses">${match}</span>`;
+            });
+
+            itemHtml = itemHtml.replace(/(\b\d+[\s%個]*)/g, (match) => {
+                return `<span class="price-info">${match}</span>`;
+            });
+
+            return itemHtml;
+        };
+
+
+        lines.forEach(line => {
+            const separatorIndex = line.indexOf('-');
+
+            if (separatorIndex !== -1 && (separatorIndex > 0 || separatorIndex < line.length - 1)) {
+
+                const floorTitle = applyHighlighting(line.substring(0, separatorIndex).trim());
+                const content = line.substring(separatorIndex + 1).trim();
+
+                html += `
+                    <li class="floor-section">
+                        <h3 class="floor-title">✨ ${floorTitle}</h3>
+                        <ul class="floor-content-list">
+                `;
+
+                const contentItems = content.split(/\s*(?:、|,)\s*(?![^(]*\))/).map(item => item.trim()).filter(item => item.length > 0);
+
+                contentItems.forEach(item => {
+                    const itemHtml = applyHighlighting(item);
+                    html += `<li>${itemHtml}</li>`;
+                });
+
+                html += `</ul></li>`;
+
+            } else if (line.length > 0) {
+                
+                const lineHtml = applyHighlighting(line);
+
+                html += `<li class="floor-section"><h3>✨${lineHtml}</h3></li>`;
+            }
+        });
+
+        html += '</ul>';
+
+        return html;
+    }
+
+    window.toggleComplete = function(dayIndex, eventIndex, checkbox) {
+        if (isEditMode) return;
+        const card = document.getElementById(`card-${dayIndex}-${eventIndex}`);
+        const key = `trip_d${dayIndex}_e${eventIndex}${CHECK_KEY_SUFFIX}`;
+        
+        if (checkbox.checked) {
+            localStorage.setItem(key, 'true');
+            card.classList.add('completed');
+        } else {
+            localStorage.removeItem(key);
+            card.classList.remove('completed');
+        }
+    };
+
+    window.enableCostEdit = function(dayIndex, eventIndex, element) {
+        if (isEditMode) return;
+        if (element.querySelector('input')) return;
+
+        const displaySpan = document.getElementById(`cost-display-${dayIndex}-${eventIndex}`);
+        const savedCost = localStorage.getItem(`trip_d${dayIndex}_e${eventIndex}${COST_KEY_SUFFIX}`);
+        const initialValue = savedCost ? savedCost : '';
+
+        element.innerHTML = `
+            <input type="number" class="cost-input" value="${initialValue}" 
+            placeholder="金額" 
+            onblur="saveCost(${dayIndex}, ${eventIndex}, this)" 
+            onkeydown="if(event.key === 'Enter') this.blur()">
+        `;
+        
+        const input = element.querySelector('input');
+        input.focus();
+    };
+
+    window.saveCost = function(dayIndex, eventIndex, input) {
+        const val = input.value;
+        const key = `trip_d${dayIndex}_e${eventIndex}${COST_KEY_SUFFIX}`;
+
+        if (val && val.trim() !== "" && parseInt(val) >= 0) {
+            localStorage.setItem(key, val);
+        } else {
+            localStorage.removeItem(key);
+        }
+
+        renderDay(dayIndex);
+    };
+
+    window.resetDailyCosts = function(dayIndex) {
+        if(!confirm("確定要重置今天的記帳數據嗎？")) return;
+        
+        const dayData = appData.days[dayIndex];
+        dayData.events.forEach((_, eIndex) => {
+            localStorage.removeItem(`trip_d${dayIndex}_e${eIndex}${COST_KEY_SUFFIX}`);
+        });
+        renderDay(dayIndex);
+    };
+
+    // --- Modal 與特殊功能 ---
+    window.copyAppDataToClipboard = function() {
+        const dataToCopy = JSON.stringify(appData, null, 4); 
+        
+        const textarea = document.createElement('textarea');
+        textarea.value = 'const originalTripData = ' + dataToCopy + ';';
+        textarea.style.position = 'fixed';
+        textarea.style.left = '-9999px';
+        document.body.appendChild(textarea);
+        
+        textarea.select();
+        
+        try {
+            const successful = document.execCommand('copy');
+            if (successful) {
+                showToast('✅ 數據已成功複製到剪貼簿！');
+            } else {
+                showToast('❌ 複製失敗，請手動複製。');
+            }
+        } catch (err) {
+            console.error('Copy command failed:', err);
+            showToast('❌ 複製失敗，請手動複製。');
+        }
+        
+        document.body.removeChild(textarea);
+        
         document.getElementById('more-menu-dropdown').classList.remove('show');
-    });
-}
-
-function updateThemeIcon(theme) {
-    const path = theme === 'dark'
-        ? '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>'
-        : '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
-    document.getElementById('theme-icon').innerHTML = path;
-}
-
-function setupNavHide() {
-    let lastY = window.scrollY;
-    const nav = document.querySelector('.day-nav');
-    window.addEventListener('scroll', () => {
-        const y = window.scrollY;
-        if (y > lastY && y > 150) { nav.classList.remove('show'); nav.classList.add('hide'); }
-        else if (y < lastY) { nav.classList.remove('hide'); nav.classList.add('show'); }
-        lastY = y;
-    });
-    document.querySelector('.day-nav').addEventListener('click', e => {
-        if (e.target.closest('.nav-container') || e.target === document.querySelector('.day-nav')) {
-            window.scrollTo({top:0, behavior:'smooth'});
-        }
-    });
-}
-
-document.getElementById('reload-server-data-btn')?.addEventListener('click', () => {
-    if (!confirm('這會把所有自訂行程、記帳、完成狀態全部覆蓋，恢845復成最原始行程！\n\n確定要繼續嗎？')) return;
-    appData = JSON.parse(JSON.stringify(originalTripData));
-    localStorage.removeItem(STORAGE_KEY);
-    for (let i = localStorage.length-1; i >= 0; i--) {
-        const k = localStorage.key(i);
-        if (k && (k.startsWith('trip_') || k === STORAGE_KEY)) localStorage.removeItem(k);
     }
-    saveData();
-    showToast('已成功從伺服器重新載入原始行程！');
-    setTimeout(() => location.reload(), 1200);
-});
+
+    window.toggleMoreMenu = function() {
+        const dropdown = document.getElementById('more-menu-dropdown');
+        dropdown.classList.toggle('show');
+    }
+
+    function openEditModal(dayIndex, eventIndex, isNew = false) {
+        const modal = document.getElementById('edit-modal');
+        const form = document.getElementById('event-form');
+        const title = document.getElementById('modal-title');
+        
+        form.reset();
+        
+        document.getElementById('event-day-index').value = dayIndex;
+        document.getElementById('event-index').value = eventIndex !== null ? eventIndex : -1;
+
+        if (isNew) {
+            title.textContent = '新增行程';
+            document.getElementById('event-estimated-cost-input').value = '0';
+        } else {
+            title.textContent = '編輯行程';
+            const event = appData.days[dayIndex].events[eventIndex];
+            document.getElementById('event-time-input').value = event.time;
+            document.getElementById('event-location-input').value = event.location;
+            document.getElementById('event-map-url-input').value = event.mapURL || '';
+            document.getElementById('event-note-url-input').value = event.noteURL || '';
+            document.getElementById('event-transport-input').value = event.transport;
+            document.getElementById('event-estimated-cost-input').value = event.cost;
+            document.getElementById('event-notes-input').value = event.notes;
+        }
+
+        modal.classList.add('visible');
+    }
+
+    window.closeEditModal = function() {
+        document.getElementById('edit-modal').classList.remove('visible');
+    }
+    
+    window.startEditEvent = function(dayIndex, eventIndex) {
+        openEditModal(dayIndex, eventIndex, false);
+    }
+
+    window.startAddEvent = function(dayIndex) {
+        openEditModal(dayIndex, null, true);
+    }
+
+    window.openQRModal = function() {
+        document.getElementById('more-menu-dropdown').classList.remove('show');
+        document.getElementById('qr-modal').classList.add('visible');
+        
+        const btns = document.querySelectorAll('.qr-person-btn');
+        btns.forEach(b => b.textContent === '我' ? b.click() : null);
+    }
+
+    window.closeQRModal = function() {
+        document.getElementById('qr-modal').classList.remove('visible');
+    }
+
+    window.switchQR = function(person, btn) {
+        document.querySelectorAll('.qr-person-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        const img = document.getElementById('qr-image-display');
+        img.src = `tdac_${person}.png`;
+    }
+    
 </script>
 </body>
 </html>
