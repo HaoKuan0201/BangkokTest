@@ -328,10 +328,19 @@
         const toast = document.getElementById('toast-notification');
         toast.textContent = message;
         toast.classList.add('visible');
+        // 確保 Toast 顯示時可以接收 pointer event (雖然通常是為了防止點擊穿透)
+        toast.style.pointerEvents = 'auto'; 
         
         clearTimeout(window.toastTimeout);
         window.toastTimeout = setTimeout(() => {
             toast.classList.remove('visible');
+            
+            // 【⭐ 關鍵修正 ⭐】
+            // 延遲一點點時間（配合 CSS transition 0.3s），確保 Toast 完全隱藏後才禁用點擊事件
+            setTimeout(() => {
+                toast.style.pointerEvents = 'none';
+            }, 300); 
+
         }, 3000);
     }
 
@@ -901,7 +910,8 @@
         document.getElementById('qr-modal').classList.add('visible');
         
         const btns = document.querySelectorAll('.qr-person-btn');
-        btns.forEach(b => b.textContent === '我' ? b.click() : null);
+        // 確保點擊 '我' 按鈕以載入初始 QR 碼 (避免首次開啟時圖片錯誤)
+        btns.forEach(b => b.textContent === '我' ? b.click() : null); 
     }
 
     window.closeQRModal = function() {
