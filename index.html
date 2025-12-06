@@ -28,17 +28,6 @@
                     </button>
 
                     <div id="more-menu-dropdown" class="more-menu-dropdown">
-                        
-                        <button class="icon-btn" onclick="openQRModal()">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="3" y="3" width="7" height="7"></rect>
-                                <rect x="14" y="3" width="7" height="7"></rect>
-                                <rect x="14" y="14" width="7" height="7"></rect>
-                                <path d="M3 14h7v7H3z"></path>
-                            </svg>
-                            TDAC QR
-                        </button>
-
                         <button id="reload-server-data-btn" class="icon-btn reload-server-btn">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M23 4v6h-6"></path>
@@ -144,26 +133,6 @@
                     <button type="submit" class="save-btn">儲存</button>
                 </div>
             </form>
-        </div>
-    </div>
-
-    <div id="qr-modal" class="edit-modal">
-        <div class="modal-content qr-modal-content">
-            <h3>TDAC QR Code</h3>
-            
-            <div class="qr-btn-group">
-                <button class="qr-person-btn active" onclick="switchQR('我', this)">我</button>
-                <button class="qr-person-btn" onclick="switchQR('媽', this)">媽</button>
-                <button class="qr-person-btn" onclick="switchQR('妹', this)">妹</button>
-            </div>
-
-            <div class="qr-image-container">
-                <img id="qr-image-display" src="tdac_我.png" alt="" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMjQgMjQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iI2NjYyIgc3Ryb2tlLXdpZHRoPSIxIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxyZWN0IHg9IjMiIHk9IjMiIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgcng9IjIiIHJ5PSIyIi8+PHBhdGggZD0iTTEyIDh2OCIvPjxwYXRoIGQ9Ik04IDEybDggMCIvPjwvc3ZnPg=='">
-            </div>
-
-            <div class="button-group" style="justify-content: center;">
-                <button type="button" class="cancel-btn" onclick="closeQRModal()">關閉</button>
-            </div>
         </div>
     </div>
 
@@ -1007,25 +976,6 @@ window.startAddEvent = function(dayIndex) {
     openEditModal(dayIndex, null, true);
 }
 
-window.openQRModal = function() {
-    document.getElementById('more-menu-dropdown').classList.remove('show');
-    document.getElementById('qr-modal').classList.add('visible');
-    
-    const btns = document.querySelectorAll('.qr-person-btn');
-    btns.forEach(b => b.textContent === '我' ? b.click() : null); 
-}
-
-window.closeQRModal = function() {
-    document.getElementById('qr-modal').classList.remove('visible');
-}
-
-window.switchQR = function(person, btn) {
-    document.querySelectorAll('.qr-person-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    
-    const img = document.getElementById('qr-image-display');
-    img.src = `tdac_${person}.png`;
-}
 </script>
 </body>
 </html>
